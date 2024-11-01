@@ -11,6 +11,15 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    public function ticket() {
+        return $this->hasMany(tickets::class);
+    }
+
+    public function winner()
+    {
+        $this->hasMany(winner::class);
+    }
+
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +30,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'created_at',
+        'updated_at',
     ];
 
     /**
