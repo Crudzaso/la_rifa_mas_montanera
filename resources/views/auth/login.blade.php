@@ -49,7 +49,11 @@
             <hr class="my-6" />
             <p class="text-center text-sm text-gray-600">{{ __('Or') }}</p>
             <div class="flex justify-center mt-4">
-                <a href="{{ route('auth.google') }}" class="btn btn-primary"> Login with Google </a>
+                <!-- Login with Google -->
+                <a href="{{ route('auth.google') }}" class="btn btn-primary">
+                    <i class="fab fa-google"></i> Login with Google
+                </a>
+            </div>
             </div>
         </div>
     </x-authentication-card>
