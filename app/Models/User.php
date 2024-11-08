@@ -6,47 +6,50 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Jetstream\HasProfilePhoto;
+use Laravel\Sanctum\HasApiTokens;
+use OwenIt\Auditing\Contracts\Auditable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Auditable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
-    public function ticket() {
-        return $this->hasMany(tickets::class);
-    }
-
-    public function winner()
-    {
-        $this->hasMany(winner::class);
-    }
+    use HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens;
+    use HasProfilePhoto;
+    use TwoFactorAuthenticatable;
+    use \OwenIt\Auditing\Auditable;
 
 
     /**
-     * The attributes that are mass assignable.
-     *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'names',
+        'lastnames',
         'email',
         'password',
-        'created_at',
-        'updated_at',
+        'address',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
      * @var array<int, string>
      */
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_recovery_codes',
+        'two_factor_secret',
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'profile_photo_url',
+    ];
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array
