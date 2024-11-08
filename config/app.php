@@ -65,7 +65,8 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE', 'UTC'),
+    'timezone' => 'America/Bogota',
+    'locale' => 'es',
 
     /*
     |--------------------------------------------------------------------------
@@ -122,5 +123,13 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+     /*
+    |--------------------------------------------------------------------------
+    | Provider Configuration
+    |--------------------------------------------------------------------------
+    |
+    | 
+    |
+    */
 
 ];
