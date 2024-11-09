@@ -9,12 +9,12 @@ use App\Http\Requests\UserUpdateFormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
-//use App\Service\DiscordWebhookService;
-/*
+use App\Service\DiscordWebhookService;
+
 use App\Events\UserCreated;
 use App\Events\UserUpdated;
 use App\Events\UserDeleted;
-use App\Events\UserRestore;*/
+use App\Events\UserRestore;
 
 class UserController extends Controller
 {
@@ -53,7 +53,7 @@ class UserController extends Controller
             'address' => $request->address,
         ]);
 
-        //event(new UserCreated($user));
+        event(new UserCreated($user));
 
         return redirect()->route('usuarios.index')->with('success', 'Usuario creado exitosamente.');
     }
@@ -99,7 +99,7 @@ class UserController extends Controller
             $user->address = $request->input('address');
             $user->save();
 
-            //event(new UserUpdated($user));
+            event(new UserUpdated($user));
 
             return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado exitosamente.');
         } catch (\Exception $e) {
@@ -114,7 +114,7 @@ class UserController extends Controller
 
             $user->delete();
 
-            //event(new UserDeleted($user));
+            event(new UserDeleted($user));
 
             return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado exitosamente.');
         } catch (\Exception $e) {
@@ -139,7 +139,7 @@ class UserController extends Controller
 
             $user->restore();
 
-            //event(new UserRestore($user));
+            event(new UserRestore($user));
 
             return redirect()->route('usuarios.index')->with('success', 'Usuario restaurado exitosamente.');
         } catch (\Exception $e) {
