@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Models;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class raffles extends Model
 {
@@ -10,11 +11,11 @@ class raffles extends Model
     use HasFactory, Notifiable;
 
     public function ticket(){
-        $this->hasMany(tickets::class);
+        return $this->hasMany(tickets::class);
     }
 
     public function winner(){
-        $this->hasMany(winner::class);
+        return $this->hasMany(winner::class);
     }
 
     /**
