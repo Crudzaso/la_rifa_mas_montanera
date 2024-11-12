@@ -6,11 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserCreateFormRequest;
 use App\Http\Requests\UserUpdateFormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
-
-use App\Service\DiscordWebhookService;
-
+use App\Traits\DiscordReporting;
 use App\Events\UserCreated;
 use App\Events\UserUpdated;
 use App\Events\UserDeleted;
@@ -18,18 +14,24 @@ use App\Events\UserRestore;
 
 class UserController extends Controller
 {
+    use DiscordReporting;
 
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        try {
-            $users = User::paginate(10);
-            return view('users.index', compact('users'));
-        } catch (\Exception $e) {
-            return redirect()->route('usuarios.index')->with('error', 'Error al cargar los usuarios.');
-        }
+        return $this->handleOperationWithDiscord(
+            function () {
+                $users = User::paginate(10);
+                return view('users.index', compact('users'));
+            },
+            'index',
+            [
+                'url' => request()->fullUrl(),
+                'method' => request()->method()
+            ]
+        );
     }
 
     /**
@@ -45,17 +47,26 @@ class UserController extends Controller
      */
     public function store(UserCreateFormRequest $request)
     {
-        $user = User::create([
-            'names' => $request->names,
-            'lastnames' => $request->lastnames,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'address' => $request->address,
-        ]);
+        return $this->handleOperationWithDiscord(
+            function () use ($request) {
+                $user = User::create([
+                    'names' => $request->names,
+                    'lastnames' => $request->lastnames,
+                    'email' => $request->email,
+                    'password' => bcrypt($request->password),
+                    'address' => $request->address,
+                ]);
 
-        event(new UserCreated($user));
-
-        return redirect()->route('usuarios.index')->with('success', 'Usuario creado exitosamente.');
+                event(new UserCreated($user));
+                return true;
+            },
+            'store',
+            [
+                'request_data' => $request->except('password'),
+                'url' => request()->fullUrl(),
+                'method' => request()->method()
+            ]
+        );
     }
 
     /**
@@ -63,12 +74,18 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        try {
-            $user = User::findOrFail($id);
-            return view('users.show', compact('user'));
-        } catch (\Exception $e) {
-            return redirect()->route('usuarios.index')->with('error', 'Usuario no encontrado.');
-        }
+        return $this->handleOperationWithDiscord(
+            function () use ($id) {
+                $user = User::findOrFail($id);
+                return view('users.show', compact('user'));
+            },
+            'show',
+            [
+                'user_id' => $id,
+                'url' => request()->fullUrl(),
+                'method' => request()->method()
+            ]
+        );
     }
 
     /**
@@ -76,12 +93,18 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        try {
-            $user = User::findOrFail($id);
-            return view('users.edit', compact('user'));
-        } catch (\Exception $e) {
-            return redirect()->route('usuarios.index')->with('error', 'Error al cargar el usuario.');
-        }
+        return $this->handleOperationWithDiscord(
+            function () use ($id) {
+                $user = User::findOrFail($id);
+                return view('users.edit', compact('user'));
+            },
+            'edit',
+            [
+                'user_id' => $id,
+                'url' => request()->fullUrl(),
+                'method' => request()->method()
+            ]
+        );
     }
 
     /**
@@ -89,61 +112,87 @@ class UserController extends Controller
      */
     public function update(UserUpdateFormRequest $request, string $id)
     {
-        try {
-            $user = User::findOrFail($id);
-            $user->names = $request->input('names');
-            $user->lastnames = $request->input('lastnames');
-            if ($request->input('password')) {
-                $user->password = bcrypt($request->input('password'));
-            }
-            $user->address = $request->input('address');
-            $user->save();
+        return $this->handleOperationWithDiscord(
+            function () use ($request, $id) {
+                $user = User::findOrFail($id);
+                $user->names = $request->input('names');
+                $user->lastnames = $request->input('lastnames');
+                if ($request->input('password')) {
+                    $user->password = bcrypt($request->input('password'));
+                }
+                $user->address = $request->input('address');
+                $user->save();
 
-            event(new UserUpdated($user));
-
-            return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado exitosamente.');
-        } catch (\Exception $e) {
-            return redirect()->route('usuarios.index')->with('error', 'Error al actualizar el usuario.');
-        }
+                event(new UserUpdated($user));
+                return true;
+            },
+            'update',
+            [
+                'user_id' => $id,
+                'request_data' => $request->except('password'),
+                'url' => request()->fullUrl(),
+                'method' => request()->method()
+            ]
+        );
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(string $id)
     {
-        try {
-            $user = User::findOrFail($id);
-
-            $user->delete();
-
-            event(new UserDeleted($user));
-
-            return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado exitosamente.');
-        } catch (\Exception $e) {
-            return redirect()->route('usuarios.index')->with('error', 'Error al eliminar el usuario.');
-        }
+        return $this->handleOperationWithDiscord(
+            function () use ($id) {
+                $user = User::findOrFail($id);
+                $user->delete();
+                event(new UserDeleted($user));
+                return true;
+            },
+            'delete',
+            [
+                'user_id' => $id,
+                'url' => request()->fullUrl(),
+                'method' => request()->method()
+            ]
+        );
     }
 
+    /**
+     * Display a listing of the trashed resources.
+     */
     public function trashed()
     {
-        try {
-            $users = User::onlyTrashed()->paginate(10);
-            return view('users.trashed', compact('users'));
-        } catch (\Exception $e) {
-            return redirect()->route('usuarios.index')->with('error', 'Error al cargar los usuarios eliminados.');
-        }
+        return $this->handleOperationWithDiscord(
+            function () {
+                $users = User::onlyTrashed()->paginate(10);
+                return view('users.trashed', compact('users'));
+            },
+            'trashed',
+            [
+                'url' => request()->fullUrl(),
+                'method' => request()->method()
+            ]
+        );
     }
 
+    /**
+     * Restore the specified trashed resource.
+     */
     public function restore(string $id)
     {
-        try {
-            $user = User::withTrashed()->findOrFail($id);
-
-            $user->restore();
-
-            event(new UserRestore($user));
-
-            return redirect()->route('usuarios.index')->with('success', 'Usuario restaurado exitosamente.');
-        } catch (\Exception $e) {
-            return redirect()->route('usuarios.index')->with('error', 'Error al restaurar el usuario.');
-        }
+        return $this->handleOperationWithDiscord(
+            function () use ($id) {
+                $user = User::withTrashed()->findOrFail($id);
+                $user->restore();
+                event(new UserRestore($user));
+                return true;
+            },
+            'restore',
+            [
+                'user_id' => $id,
+                'url' => request()->fullUrl(),
+                'method' => request()->method()
+            ]
+        );
     }
 }

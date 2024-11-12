@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use PHPUnit\Framework\Attributes\Ticket;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class winner extends Model
 {
