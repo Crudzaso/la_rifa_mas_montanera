@@ -23,8 +23,7 @@ class SendDiscordNotification
     private const COLOR_RESTORED = 0xe27d60; 
 
     // URL del logo de tu proyecto
-    private const PROJECT_LOGO_URL = 'https://media.istockphoto.com/id/1313644269/es/vector/plantilla-de-logotipo-de-estrella-de-c%C3%ADrculo-de-oro-y-plata.jpg?s=612x612&w=0&k=20&c=dNxY9Kn6HigtMX7DmKGlMES5FOseqxns0sFUosiyRuQ=';
-
+    private const PROJECT_LOGO_URL = 'https://i.postimg.cc/gJDDPwBV/android-chrome-512x512.png';
     /**
      * Create the event listener.
      */
@@ -38,7 +37,7 @@ class SendDiscordNotification
      */
     public function handleUserCreated(UserCreated $event): void
     {
-        $this->sendNotification($event->user, 'ha sido creado 🎉', auth()->user(), self::COLOR_CREATED);
+        $this->sendNotification($event->user, ' ha sido creado 🎉', auth()->user(), self::COLOR_CREATED);
     }
 
     /**
@@ -46,7 +45,7 @@ class SendDiscordNotification
      */
     public function handleUserUpdated(UserUpdated $event): void
     {
-        $this->sendNotification($event->user, 'ha sido actualizado ✏️ ', auth()->user(), self::COLOR_UPDATED);
+        $this->sendNotification($event->user, ' ha sido actualizado ✏️ ', auth()->user(), self::COLOR_UPDATED);
     }
 
     /**
@@ -62,7 +61,7 @@ class SendDiscordNotification
      */
     public function handleUserRestore(UserRestore $event): void
     {
-        $this->sendNotification($event->user, 'ha sido restaurado 🔄', auth()->user(), self::COLOR_RESTORED);
+        $this->sendNotification($event->user, ' ha sido restaurado 🔄', auth()->user(), self::COLOR_RESTORED);
     }
 
     /**
@@ -70,14 +69,14 @@ class SendDiscordNotification
      */
     public function handleUserLogin(UserLogin $event): void
     {
-        $this->sendNotification($event->user, 'ha ingresado 👤', auth()->user(), self::COLOR_CREATED);
+        $this->sendNotification($event->user, ' ha ingresado 👤', auth()->user(), self::COLOR_CREATED);
     }
 
     protected function sendNotification($user, $action, $actor, $color, )
     {
         try {
             $embed = [
-                'title' => "La rifa más montañera ⛰️👨‍🌾 - Usuario{$action}",
+                'title' => "La rifa más montañera ⛰️👨‍🌾 - Usuario {$action}",
                 'color' => $color,
                 'thumbnail' => [
                     'url' => self::PROJECT_LOGO_URL,
