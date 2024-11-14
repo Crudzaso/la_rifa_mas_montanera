@@ -40,11 +40,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('usuarios/eliminados', [UserController::class, 'trashed'])->name('usuarios.trashed');
     Route::post('usuarios/{id}/restaurar', [UserController::class, 'restore'])->name('usuarios.restore');
     Route::post('/logout', [GoogleController::class, 'logout'])->name('logout');
-    Route::get('usuarios/crear', [UserController::class, 'create'])->name('usuarios.create'); 
-    Route::post('usuarios', [UserController::class, 'store'])->name('usuarios.store'); 
-    Route::get('pruebalayout', function(){
+    Route::get('usuarios/crear', [UserController::class, 'create'])->name('usuarios.create');
+    Route::post('usuarios', [UserController::class, 'store'])->name('usuarios.store');
+    Route::get('pruebalayout', function () {
         return view('layouts.component-layout');
-    })->name('usuarios.layouts'); 
-    
+    })->name('usuarios.layouts');
 });
-
