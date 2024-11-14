@@ -67,7 +67,8 @@
                             <x-login-form />
                         @elseif(Request::is('register'))
                             <x-register-form />
-                        @else
+                        @else (Request::is('forgot-password'))
+                            <x-email-request/>
                             
                         @endif
                     </div>
