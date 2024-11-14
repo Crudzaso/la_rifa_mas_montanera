@@ -11,6 +11,7 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements Auditable
 {
@@ -19,6 +20,7 @@ class User extends Authenticatable implements Auditable
     use HasProfilePhoto;
     use TwoFactorAuthenticatable;
     use \OwenIt\Auditing\Auditable;
+    use HasRoles;
 
 
     /**
@@ -28,7 +30,9 @@ class User extends Authenticatable implements Auditable
         'names',
         'lastnames',
         'email',
+        'email_verified_at',
         'password',
+        'phone_number',
         'address',
     ];
 
@@ -38,8 +42,8 @@ class User extends Authenticatable implements Auditable
     protected $hidden = [
         'password',
         'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
+        //'two_factor_recovery_codes',
+        //'two_factor_secret',
     ];
 
     /**
@@ -48,6 +52,7 @@ class User extends Authenticatable implements Auditable
     protected $appends = [
         'profile_photo_url',
     ];
+
 
     /**
      * @return array<string, string>

@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 return new class extends Migration
 {
@@ -18,6 +19,9 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('password')->nullable();
             $table->string('address')->nullable();
+            $table->string('profile_photo_path')->nullable(); // Campo para la foto de perfil
+            $table->string('phone_number')->nullable(); // Campo para el número de teléfono
+            $table->timestamp('email_verified_at')->nullable(); // Campo para la confirmación de correo electrónico
             $table->rememberToken();
             $table->timestamps();
         });

@@ -14,7 +14,7 @@ use Laravel\Jetstream\Features;
  */
 class UserFactory extends Factory
 {
-   
+
     protected static ?string $password;
 
     /**
@@ -22,20 +22,22 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+
+
         return [
-            'name' => fake()->name(),
+            'names' => fake()->name(),
+            'lastnames'=>fake()->lastName,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
-            'two_factor_secret' => null,
-            'two_factor_recovery_codes' => null,
+            'phone_number' => '3' . fake()->randomElement(['0', '1', '2', '3', '5']) . fake()->numerify('#######'),
+            'address' => fake()->address(),
             'remember_token' => Str::random(10),
-            'profile_photo_path' => null,
-            'current_team_id' => null,
+            'profile_photo_path' => fake()->imageUrl($width = 640, $height = 480),
         ];
     }
 
-    
+
     public function unverified(): static
     {
         return $this->state(fn (array $attributes) => [
