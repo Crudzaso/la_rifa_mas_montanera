@@ -35,6 +35,6 @@
         </button>
     </div>
     <div class="text-gray-500 text-center fw-semibold fs-6">Not a Member yet?
-        <a href="authentication/layouts/creative/sign-up.html" class="link-primary">Sign up</a>
+        <a href="{{ route('register') }}" class="link-primary">Sign up</a>
     </div>
 </form>
