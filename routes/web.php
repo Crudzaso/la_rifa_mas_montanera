@@ -24,19 +24,12 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-
-    Route::get('usuarios',function(){
-        return Inertia::render('Users',[
-            'users' => User::all()
-        ]);
-        Route::get('usuarios',[UserController::class,'index'])->name('usuarios.index');
-        Route::get('usuarios/crear',[UserController::class,'create'])->name('usuarios.create');
-        Route::post('usuarios',[UserController::class,'store'])->name('usuarios.store');
-        Route::get('usuarios/{user}/editar',[UserController::class,'edit'])->name('usuarios.edit');
-        Route::put('usuarios/{user}',[UserController::class,'update'])->name('usuarios.update');
-        Route::delete('usuarios/{user}',[UserController::class,'destroy'])->name('usuarios.destroy');
-
-    })->name('usuarios.page');
-
-
+    Route::prefix('usuarios')->group(function(){
+        Route::get('/',[UserController::class,'index'])->name('users.index');
+        Route::get('/crear',[UserController::class,'create'])->name('users.create');
+        Route::post('/',[UserController::class,'store'])->name('users.store');
+        Route::get('/{user}/editar',[UserController::class,'edit'])->name('users.edit');
+        Route::put('/{user}',[UserController::class,'update'])->name('users.update');
+        Route::delete('/{user}',[UserController::class,'destroy'])->name('users.destroy');
+    });
 });

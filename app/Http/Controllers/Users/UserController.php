@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Users\StoreRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\User;
@@ -14,9 +15,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Users/index', [
+        return Inertia::render('Users/indexUser', [
             'users' => User::all(),
         ]);
+
+
     }
 
     /**
@@ -24,15 +27,20 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+
+        return Inertia::render('Users/createUser');
+
+
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        //
+
+        dd($request->all());
+
     }
 
     /**
