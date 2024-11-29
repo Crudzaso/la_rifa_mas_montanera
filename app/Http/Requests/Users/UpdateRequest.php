@@ -24,8 +24,8 @@ class UpdateRequest extends FormRequest
     {
         return [
            'name' => 'min:3|max:255',
-            'email' => 'email|unique:users,email',
-            
+           'email' => 'email'
+
         ];
     }
 
