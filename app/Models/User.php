@@ -31,7 +31,10 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
-        'address'
+        'address',
+        'avatar',
+        'external_id',
+        'external_auth'
     ];
 
     /**
