@@ -1,23 +1,21 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Link from '@/Components/NavLink.vue';
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
+
+const page = usePage();
+const users = page.props.users;
 
 const showMessage = ref(false);
 const message = ref('');
 
-defineProps({
-    users: {
-        type: Object,
-        required: true
-    }
-});
 
-const eliminarUsuario = (id) => {
+const deleteUser = (id) => {
     if (confirm('¿Estás seguro de eliminar este usuario?')) {
         router.delete(route('users.destroy', id), {
             preserveScroll: true,
+            preserveState: false,
             onSuccess: () => {
                 message.value = 'Usuario eliminado correctamente';
                 showMessage.value = true;
@@ -29,7 +27,7 @@ const eliminarUsuario = (id) => {
     }
 };
 
-const editarUsuario = (id) => {
+const editUser = (id) => {
     router.get(route('users.edit', id));
 };
 </script>
@@ -40,7 +38,7 @@ const editarUsuario = (id) => {
         <div v-if="showMessage"
              class="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-md z-50"
              role="alert">
-            <span class="block sm:inline">{{ message }}</span>
+            <span class="block sm:inline font-bold">{{ message }}</span>
         </div>
 
         <template #header>
@@ -80,7 +78,7 @@ const editarUsuario = (id) => {
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3">
                                         <!-- Editar -->
                                         <button
-                                            @click="editarUsuario(user.id)"
+                                            @click="editUser(user.id)"
                                             class="text-indigo-600 hover:text-indigo-900 transition-colors duration-200 px-2"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -89,7 +87,7 @@ const editarUsuario = (id) => {
                                         </button>
                                         <!-- Eliminar -->
                                         <button
-                                            @click="eliminarUsuario(user.id)"
+                                            @click="deleteUser(user.id)"
                                             class="text-red-600 hover:text-red-900 transition-colors duration-200 px-2"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
