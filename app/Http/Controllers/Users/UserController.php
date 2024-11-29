@@ -62,7 +62,10 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        return Inertia::render('Users/EditUser', [
+            'user' => $user
+        ]);
     }
 
     /**
@@ -78,6 +81,12 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+            return back()->with('message', 'Usuario eliminado correctamente');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Error al eliminar el usuario']);
+        }
     }
 }

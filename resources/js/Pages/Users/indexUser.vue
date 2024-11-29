@@ -1,7 +1,11 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Link from '@/Components/NavLink.vue';
+import { router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
+const showMessage = ref(false);
+const message = ref('');
 
 defineProps({
     users: {
@@ -9,10 +13,36 @@ defineProps({
         required: true
     }
 });
+
+const eliminarUsuario = (id) => {
+    if (confirm('¿Estás seguro de eliminar este usuario?')) {
+        router.delete(route('users.destroy', id), {
+            preserveScroll: true,
+            onSuccess: () => {
+                message.value = 'Usuario eliminado correctamente';
+                showMessage.value = true;
+                setTimeout(() => {
+                    showMessage.value = false;
+                }, 3000);
+            }
+        });
+    }
+};
+
+const editarUsuario = (id) => {
+    router.get(route('users.edit', id));
+};
 </script>
 
 <template>
     <AppLayout title="usuarios">
+        <!-- Mensaje de alerta -->
+        <div v-if="showMessage"
+             class="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-md z-50"
+             role="alert">
+            <span class="block sm:inline">{{ message }}</span>
+        </div>
+
         <template #header>
             <div class="flex justify-between">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -49,13 +79,19 @@ defineProps({
                                     <td class="px-6 py-4 whitespace-nowrap">{{ new Date(user.updated_at).toLocaleDateString() }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3">
                                         <!-- Editar -->
-                                        <button class="text-indigo-600 hover:text-indigo-900 transition-colors duration-200">
+                                        <button
+                                            @click="editarUsuario(user.id)"
+                                            class="text-indigo-600 hover:text-indigo-900 transition-colors duration-200 px-2"
+                                        >
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                                             </svg>
                                         </button>
                                         <!-- Eliminar -->
-                                        <button class="text-red-600 hover:text-red-900 transition-colors duration-200">
+                                        <button
+                                            @click="eliminarUsuario(user.id)"
+                                            class="text-red-600 hover:text-red-900 transition-colors duration-200 px-2"
+                                        >
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
                                             </svg>
