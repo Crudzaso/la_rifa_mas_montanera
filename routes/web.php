@@ -31,8 +31,9 @@ Route::get('/login-google', function () {
     return Socialite::driver('google')->redirect();
 });
  
-Route::get('http://127.0.0.1:8000/auth/google/callback', function () {
-    $user = Socialite::driver('google')->user();
+Route::get('auth/google/callback', function () {
+    return Socialite::driver('google')->user();
+    
 
     $userExist = User::where('external_id', $user->id)->where('external_auth', 'google')->exists();
 
