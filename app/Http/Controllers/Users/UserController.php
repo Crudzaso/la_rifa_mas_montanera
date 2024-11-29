@@ -7,6 +7,7 @@ use App\Http\Requests\Users\StoreRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -16,9 +17,8 @@ class UserController extends Controller
     public function index()
     {
         return Inertia::render('Users/indexUser', [
-            'users' => User::all(),
+            'users' => User::all()
         ]);
-
 
     }
 
@@ -38,9 +38,15 @@ class UserController extends Controller
      */
     public function store(StoreRequest $request)
     {
+        try {
+            $user = $request->validated();
+            $user['password'] = Hash::make($user['password']);
 
-        dd($request->all());
+            User::create($user);
 
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Error al crear el usuario']);
+        }
     }
 
     /**
