@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\GoogleController;
 use App\Models\User;
 use Inertia\Inertia;
 
@@ -26,12 +27,11 @@ Route::middleware([
     })->name('dashboard');
 });
 
+Route::get('/auth/google', [GoogleController::class, 'login'])->name('auth.google');
+Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
 
-Route::get('/login-google', function () {
-    return Socialite::driver('google')->redirect();
-});
  
-Route::get('auth/google/callback', function () {
+/*  Route::get('auth/google/callback', function () {
     return Socialite::driver('google')->user();
     
 
@@ -53,4 +53,4 @@ Route::get('auth/google/callback', function () {
 
     return redirect('/dashboard');
 
-});
+});  */
