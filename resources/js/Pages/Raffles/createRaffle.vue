@@ -8,22 +8,21 @@ import { useForm } from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { ref } from "vue";
 import DateInput from "@/Components/DateInput.vue";
+import Alert from '@/Components/Alert.vue';
 
 const showMessage = ref(false);
+const message = ref('');
+const type = ref('');
+
 const form = useForm({
   title: "",
   description: "",
-  url_image: null,
-  prize: "",
+  url_image: "",
   start_date: "",
   end_date: "",
-  price_tickets: "",
-  total_tickets: "",
+    price_tickets: "",
+    prize: ""
 });
-
-const onFileChange = (e) => {
-  form.url_image = e.target.files[0];
-};
 
 // Submit form function
 const submit = () => {
@@ -32,11 +31,16 @@ const submit = () => {
 
     onSuccess: () => {
       showMessage.value = true;
+      message.value = 'Rifa creada correctamente';
+      type.value = 'success';
       setTimeout(() => {
         window.location.href = route("raffles.index");
-      }, 1000);
+      }, 2000);
     },
     onError: (errors) => {
+      showMessage.value = true;
+      message.value = 'Error al crear la rifa';
+      type.value = 'error';
       console.error("Errores:", errors);
     },
   });
@@ -68,15 +72,11 @@ const submit = () => {
             </h1>
           </div>
 
-          <div
+          <Alert
             v-if="showMessage"
-            class="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-md"
-            role="alert"
-          >
-            <strong class="font-bold">¡Éxito!</strong>
-            <span class="block sm:inline">Rifa creada correctamente.</span>
-            <span class="block text-sm">Redirigiendo en 1 segundo...</span>
-          </div>
+            :message="message"
+            :type="type"
+          />
 
           <form class="w-1/2 py-12 px-12 space-y-3" @submit.prevent="submit">
             <!-- Title input -->

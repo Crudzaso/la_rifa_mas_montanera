@@ -52,7 +52,7 @@ class RaffleController extends Controller
 
             Raffle::create($raffle);
 
-            return to_route('raffles.index')
+            return to_route('raffles.create')
                 ->with('message', 'Rifa creada correctamente');
         } catch (\Throwable $th) {
             return to_route('raffles.create')
@@ -100,7 +100,7 @@ class RaffleController extends Controller
 
             $raffle->update($validated);
 
-            return redirect()->route('raffles.index')
+            return to_route('raffles.edit', $raffle)
                 ->with('message', 'Rifa actualizada correctamente');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Error al actualizar la rifa']);

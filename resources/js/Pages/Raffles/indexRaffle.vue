@@ -3,6 +3,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Link from '@/Components/NavLink.vue';
 import { router, usePage } from '@inertiajs/vue3';
 import { ref, computed, watch } from 'vue';
+import Alert from '@/Components/Alert.vue';
 
 const page = usePage();
 const raffles = page.props.raffles;
@@ -105,12 +106,11 @@ const debugDate = (date) => {
 
 <template>
   <AppLayout title="Rifa">
-    <!-- Mensaje de alerta -->
-    <div v-if="showMessage"
-         class="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-md z-50"
-         role="alert">
-      <span class="block sm:inline font-bold">{{ message }}</span>
-    </div>
+    <Alert
+      v-if="showMessage"
+      :message="message"
+      :type="'Éxito'"
+    />
 
     <template #header>
       <div class="flex justify-between">

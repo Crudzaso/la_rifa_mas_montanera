@@ -4,6 +4,7 @@ import Link from "@/Components/NavLink.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import TextInput from "@/Components/TextInput.vue";
+import Alert from "@/Components/Alert.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { ref } from "vue";
@@ -12,6 +13,8 @@ import DateInput from "@/Components/DateInput.vue";
 const page = usePage();
 const raffle = page.props.raffle;
 const showMessage = ref(false);
+const message = ref('');
+const type = ref('');
 
 // Formatear fechas al YYYY-MM-DD
 const formatDate = (date) => {
@@ -38,10 +41,17 @@ const submit = () => {
   form.put(route('raffles.update', raffle.id), {
     preserveScroll: true,
     onSuccess: () => {
+      message.value = 'Rifa actualizada correctamente';
+      type.value = 'success';
       showMessage.value = true;
       setTimeout(() => {
         window.location.href = route('raffles.index');
       }, 2000);
+    },
+    onError: () => {
+      message.value = 'Error al actualizar la rifa';
+      type.value = 'error';
+      showMessage.value = true;
     }
   });
 };
@@ -49,6 +59,12 @@ const submit = () => {
 
 <template>
   <AppLayout title="Editar Rifa">
+    <Alert
+      v-if="showMessage"
+      :message="message"
+      :type="type"
+    />
+
     <template #header>
       <div class="flex justify-between">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -60,12 +76,6 @@ const submit = () => {
         </Link>
       </div>
     </template>
-
-    <!-- Mensaje de éxito -->
-    <div v-if="showMessage"
-         class="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-md z-50">
-      <span class="block sm:inline">Rifa actualizada correctamente</span>
-    </div>
 
     <div class="py-12">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
