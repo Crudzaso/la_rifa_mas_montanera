@@ -248,12 +248,9 @@ const debugDate = (date) => {
 
                 <Link
                   v-if="raffle.status === 'ongoing'"
-                  :href="route('raffles.create', raffle.id)"
-                  class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
+                  :href="route('tickets.create', { raffle_id: raffle.id })"
+                  class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
                 >
-                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-                  </svg>
                   Comprar Boleto
                 </Link>
               </div>

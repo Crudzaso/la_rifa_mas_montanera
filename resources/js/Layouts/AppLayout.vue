@@ -52,6 +52,10 @@ const logout = () => {
                                     Rifas
                                 </NavLink>
 
+                                <NavLink :href="route('tickets.index')" :active="route().current('tickets.index')">
+                                    Boletos
+                                </NavLink>
+
                             </div>
 
                         </div>

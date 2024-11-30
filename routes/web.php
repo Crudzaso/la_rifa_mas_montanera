@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Raffles\RaffleController;
+use App\Http\Controllers\Tickts\TicketsController;
 
 
 Route::get('/', function () {
@@ -44,6 +45,15 @@ Route::middleware([
         Route::delete('/{raffle}',[RaffleController::class,'destroy'])->name('raffles.destroy');
     });
 
+    Route::prefix('boletos')->group(function(){
+        Route::get('/',[TicketsController::class,'index'])->name('tickets.index');
+        Route::get('/crear',[TicketsController::class,'create'])->name('tickets.create');
+        Route::post('/',[TicketsController::class,'store'])->name('tickets.store');
+        Route::get('/{ticket}/editar',[TicketsController::class,'edit'])->name('tickets.edit');
+        Route::put('/{ticket}',[TicketsController::class,'update'])->name('tickets.update');
+        Route::delete('/{ticket}',[TicketsController::class,'destroy'])->name('tickets.destroy');
+    });
+    
 });
 
 

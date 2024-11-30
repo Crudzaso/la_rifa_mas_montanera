@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Tickts;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tickets;
+use App\Models\Raffle;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TicketsController extends Controller
 {
@@ -13,15 +15,19 @@ class TicketsController extends Controller
      */
     public function index()
     {
-        //
+        $tickets = Tickets::all();
+        return Inertia::render('Tickets/indexTicket',compact('tickets'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $raffle = Raffle::findOrFail($request->raffle_id);
+        return Inertia::render('Tickets/createTicket', [
+            'raffle' => $raffle
+        ]);
     }
 
     /**
