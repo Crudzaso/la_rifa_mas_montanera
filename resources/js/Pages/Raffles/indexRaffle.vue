@@ -2,62 +2,68 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Link from '@/Components/NavLink.vue';
 import { router, usePage } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 const page = usePage();
 const raffles = page.props.raffles;
 const activeTab = ref('ongoing');
+const showMessage = ref(false);
+const message = ref('');
 
 // Estados disponibles
 const tabStates = ['ongoing', 'pending', 'finished'];
 
-// Computed properties para filtrar rifas
+// Formatear fechas
+const formatDate = (date) => {
+    if (!date) return '';
+    const d = new Date(date);
+    return d.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+};
+
+// Computed property para filtrar rifas según estado
 const filteredRaffles = computed(() => {
-  return raffles.filter(raffle => getRaffleStatus(raffle) === activeTab.value);
+    if (!raffles) return [];
+    return raffles.filter(raffle => raffle.status === activeTab.value);
 });
 
-const showMessage = ref(false);
-const message = ref('');
+// Actualizar vista al cambiar estado
+watch(() => page.props.raffles, (newRaffles) => {
+    if (newRaffles) {
+        router.get(route('raffles.index'), {}, {
+            preserveState: true,
+            preserveScroll: true,
+            only: ['raffles']
+        });
+    }
+});
 
-const getRaffleStatus = (raffle) => {
-  const now = new Date();
-  const startDate = new Date(raffle.start_date);
-  const endDate = new Date(raffle.end_date);
-
-  if (now < startDate) {
-    return 'pending';
-  } else if (now >= startDate && now <= endDate) {
-    return 'ongoing';
-  } else {
-    return 'finished';
-  }
+// Traducción de estados
+const getStatusTranslation = (status) => {
+    switch(status) {
+        case 'ongoing': return 'En Juego';
+        case 'pending': return 'Pendiente';
+        case 'finished': return 'Finalizado';
+        default: return status;
+    }
 };
 
+// Colores según estado
 const getStatusColor = (status) => {
-  switch(status) {
-    case 'pending': return 'bg-yellow-100 text-yellow-800';
-    case 'ongoing': return 'bg-green-100 text-green-800';
-    case 'finished': return 'bg-red-100 text-red-800';
-    default: return 'bg-gray-100 text-gray-800';
-  }
+    switch(status) {
+        case 'ongoing': return 'bg-green-100 text-green-800';
+        case 'pending': return 'bg-yellow-100 text-yellow-800';
+        case 'finished': return 'bg-red-100 text-red-800';
+        default: return 'bg-gray-100 text-gray-800';
+    }
 };
 
-const formatDate = (date) => {
-  const d = new Date(date);
-
-  const year = d.getUTCFullYear();
-  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(d.getUTCDate()).padStart(2, '0');
-  return `${day}/${month}/${year}`;
-};
-
-const getTabName = (tab) => {
-  switch(tab) {
-    case 'ongoing': return 'En Juego';
-    case 'pending': return 'Pendientes';
-    case 'finished': return 'Finalizadas';
-    default: return '';
-  }
+// Función para cambiar pestaña
+const changeTab = (tab) => {
+    activeTab.value = tab;
 };
 </script>
 
@@ -82,14 +88,14 @@ const getTabName = (tab) => {
       </div>
     </template>
 
-    <!-- Tabs de filtrado -->
+    <!-- Pestañas -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
       <div class="border-b border-gray-200">
         <nav class="-mb-px flex space-x-8">
           <button
             v-for="tab in tabStates"
             :key="tab"
-            @click="activeTab = tab"
+            @click="changeTab(tab)"
             class="py-4 px-1 border-b-2 font-medium text-sm"
             :class="[
               activeTab === tab
@@ -97,7 +103,7 @@ const getTabName = (tab) => {
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             ]"
           >
-            {{ getTabName(tab) }}
+            {{ getStatusTranslation(tab) }}
           </button>
         </nav>
       </div>
@@ -121,7 +127,7 @@ const getTabName = (tab) => {
           </p>
         </div>
 
-        <!-- Grid de rifas -->
+        <!-- Lista de rifas -->
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- Tarjeta de Rifa -->
           <div v-for="raffle in filteredRaffles" :key="raffle.id"
@@ -140,8 +146,8 @@ const getTabName = (tab) => {
                 <h3 class="text-2xl font-bold text-gray-800 hover:text-indigo-600 transition-colors duration-200">
                   {{ raffle.title }}
                 </h3>
-                <span :class="[getStatusColor(getRaffleStatus(raffle)), 'px-3 py-1 rounded-full text-sm font-semibold shadow-sm']">
-                  {{ getRaffleStatus(raffle) }}
+                <span :class="[getStatusColor(raffle.status), 'px-3 py-1 rounded-full text-sm font-semibold shadow-sm']">
+                  {{ getStatusTranslation(raffle.status) }}
                 </span>
               </div>
 
@@ -205,7 +211,7 @@ const getTabName = (tab) => {
                 </Link>
 
                 <Link
-                  v-if="getRaffleStatus(raffle) === 'ongoing'"
+                  v-if="raffle.status === 'ongoing'"
                   :href="route('raffles.create', raffle.id)"
                   class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
                 >

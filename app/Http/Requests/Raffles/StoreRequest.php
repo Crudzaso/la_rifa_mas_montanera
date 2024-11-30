@@ -27,8 +27,16 @@ class StoreRequest extends FormRequest
             'title' => 'required|string|max:100', // Título obligatorio y de máximo 255 caracteres
             'description' => 'nullable|string|max:255', // Descripción opcional con límite de 1000 caracteres
             'prize' => 'required|string|max:255', // Premio obligatorio y de máximo 255 caracteres
-            'start_date' => 'required|date|after_or_equal:today', // Fecha de inicio obligatoria y no anterior al día de hoy
-            'end_date' => 'required|date|after:start_date', // Fecha de finalización obligatoria y posterior a la fecha de inicio
+            'start_date' => [
+                'required',
+                'date_format:Y-m-d', // Forzar formato específico
+                'after_or_equal:today',
+            ],
+            'end_date' => [
+                'required',
+                'date_format:Y-m-d',
+                'after_or_equal:start_date',
+            ],
             'price_tickets' => 'required|in:2000,5000,10000,20000,50000', // El precio del boleto debe ser uno de los valores definidos
             'url_image' => 'nullable|url', // Imagen opcional con formatos permitidos
         ];

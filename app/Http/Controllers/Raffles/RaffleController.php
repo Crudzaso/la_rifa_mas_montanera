@@ -1,13 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Raffles;
-
+use App\Http\Requests\Raffles\UpdateRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Raffles\StoreRequest;
 use App\Models\Raffle;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class RaffleController extends Controller
 {
@@ -39,11 +39,20 @@ class RaffleController extends Controller
             $raffle = $request->validated();
             $raffle['user_id'] = Auth::user()->id;
             $raffle['total_tickets'] = 100;
-            $raffle['status'] = now()->lt($raffle['end_date']) ? 'pending' : 'finished';
+
+            // Determinar estado inicial
+            $now = now();
+            $startDate = Carbon::parse($raffle['start_date']);
+
+            if ($now->lt($startDate)) {
+                $raffle['status'] = 'pending';
+            } else {
+                $raffle['status'] = 'ongoing';
+            }
 
             Raffle::create($raffle);
 
-            return to_route('raffles.create')
+            return to_route('raffles.index')
                 ->with('message', 'Rifa creada correctamente');
         } catch (\Throwable $th) {
             return to_route('raffles.create')
@@ -64,15 +73,38 @@ class RaffleController extends Controller
      */
     public function edit(Raffle $raffle)
     {
-        //
+        $raffle = Raffle::findOrFail($raffle->id);
+        return Inertia::render('Raffles/editRaffle',compact('raffle'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Raffle $raffle)
+    public function update(UpdateRequest $request, Raffle $raffle)
     {
-        //
+        try {
+            $validated = $request->validated();
+
+            // Determinar estado según fechas
+            $now = now()->startOfDay();
+            $startDate = Carbon::parse($validated['start_date'])->startOfDay();
+            $endDate = Carbon::parse($validated['end_date'])->startOfDay();
+
+            if ($now->lt($startDate)) {
+                $validated['status'] = 'pending';
+            } elseif ($now->between($startDate, $endDate)) {
+                $validated['status'] = 'ongoing';
+            } else {
+                $validated['status'] = 'finished';
+            }
+
+            $raffle->update($validated);
+
+            return redirect()->route('raffles.index')
+                ->with('message', 'Rifa actualizada correctamente');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Error al actualizar la rifa']);
+        }
     }
 
     /**
