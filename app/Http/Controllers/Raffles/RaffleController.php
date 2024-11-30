@@ -1,9 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Raffles;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Raffles\StoreRequest;
 use App\Models\Raffle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class RaffleController extends Controller
 {
@@ -12,7 +16,10 @@ class RaffleController extends Controller
      */
     public function index()
     {
-        //
+        $raffles = Raffle::all();
+        //dd($raffles);
+        return Inertia::render('Raffles/indexRaffle',compact('raffles'));
+        dd($raffles);
     }
 
     /**
@@ -20,15 +27,28 @@ class RaffleController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Raffles/createRaffle');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        //
+        try {
+            $raffle = $request->validated();
+            $raffle['user_id'] = Auth::user()->id;
+            $raffle['total_tickets'] = 100;
+            $raffle['status'] = now()->lt($raffle['end_date']) ? 'pending' : 'finished';
+
+            Raffle::create($raffle);
+
+            return to_route('raffles.create')
+                ->with('message', 'Rifa creada correctamente');
+        } catch (\Throwable $th) {
+            return to_route('raffles.create')
+                ->with('message', 'Error al crear la rifa');
+        }
     }
 
     /**

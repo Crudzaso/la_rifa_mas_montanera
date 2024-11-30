@@ -1,10 +1,11 @@
 <?php
 
-use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Users\UserController;
+use App\Http\Controllers\Raffles\RaffleController;
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -32,4 +33,17 @@ Route::middleware([
         Route::put('/{user}',[UserController::class,'update'])->name('users.update');
         Route::delete('/{user}',[UserController::class,'destroy'])->name('users.destroy');
     });
+
+
+    Route::prefix('rifas')->group(function(){
+        Route::get('/',[RaffleController::class,'index'])->name('raffles.index');
+        Route::get('/crear',[RaffleController::class,'create'])->name('raffles.create');
+        Route::post('/',[RaffleController::class,'store'])->name('raffles.store');
+        Route::get('/{raffle}/editar',[RaffleController::class,'edit'])->name('raffles.edit');
+        Route::put('/{raffle}',[RaffleController::class,'update'])->name('raffles.update');
+        Route::delete('/{raffle}',[RaffleController::class,'destroy'])->name('raffles.destroy');
+    });
+
 });
+
+
