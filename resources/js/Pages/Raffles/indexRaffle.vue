@@ -15,16 +15,33 @@ const tabStates = ['ongoing', 'pending', 'finished'];
 
 // Formatear fechas
 const formatDate = (date) => {
-    if (!date) return '';
-    const d = new Date(date);
-    return d.toLocaleDateString('es-ES', {
+    if (!date) return 'Sin fecha';
+    const fecha = new Date(date);
+    fecha.setMinutes(fecha.getMinutes() + fecha.getTimezoneOffset());
+
+    return fecha.toLocaleDateString('es-ES', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit'
     });
 };
 
-// Computed property para filtrar rifas según estado
+// Calcular estado
+const calculateStatus = (raffle) => {
+    const now = new Date();
+    const startDate = new Date(raffle.start_date);
+    const endDate = new Date(raffle.end_date);
+
+    if (now < startDate) {
+        return 'pending';
+    } else if (now > endDate) {
+        return 'finished';
+    } else {
+        return 'ongoing';
+    }
+};
+
+
 const filteredRaffles = computed(() => {
     if (!raffles) return [];
     return raffles.filter(raffle => raffle.status === activeTab.value);
@@ -40,6 +57,19 @@ watch(() => page.props.raffles, (newRaffles) => {
         });
     }
 });
+
+// Observar cambios en las fechas
+watch(raffles, () => {
+    raffles?.forEach(raffle => {
+        const newStatus = calculateStatus(raffle);
+        if (raffle.status !== newStatus) {
+            router.put(route('raffles.update', raffle.id), {
+                ...raffle,
+                status: newStatus
+            });
+        }
+    });
+}, { deep: true });
 
 // Traducción de estados
 const getStatusTranslation = (status) => {
@@ -64,6 +94,12 @@ const getStatusColor = (status) => {
 // Función para cambiar pestaña
 const changeTab = (tab) => {
     activeTab.value = tab;
+};
+
+// Función para debug
+const debugDate = (date) => {
+    console.log('Fecha original:', date);
+    console.log('Fecha formateada:', formatDate(date));
 };
 </script>
 
@@ -184,13 +220,13 @@ const changeTab = (tab) => {
                     <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    Inicio: {{ formatDate(raffle.start_date) }}
+                    Fecha de inicio: {{ formatDate(raffle.start_date) }}
                   </p>
                   <p class="flex items-center">
                     <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Juega: {{ formatDate(raffle.end_date) }}
+                    Fecha de juego: {{ formatDate(raffle.end_date) }}
                   </p>
                 </div>
               </div>

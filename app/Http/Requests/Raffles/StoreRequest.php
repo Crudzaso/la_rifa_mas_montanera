@@ -24,9 +24,9 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:100', // Título obligatorio y de máximo 255 caracteres
-            'description' => 'nullable|string|max:255', // Descripción opcional con límite de 1000 caracteres
-            'prize' => 'required|string|max:255', // Premio obligatorio y de máximo 255 caracteres
+            'title' => 'required|string|max:100',
+            'description' => 'nullable|string|max:255',
+            'prize' => 'required|string|max:255',
             'start_date' => [
                 'required',
                 'date_format:Y-m-d', // Forzar formato específico
@@ -37,8 +37,8 @@ class StoreRequest extends FormRequest
                 'date_format:Y-m-d',
                 'after_or_equal:start_date',
             ],
-            'price_tickets' => 'required|in:2000,5000,10000,20000,50000', // El precio del boleto debe ser uno de los valores definidos
-            'url_image' => 'nullable|url', // Imagen opcional con formatos permitidos
+            'price_tickets' => 'required|in:2000,5000,10000,20000,50000', 
+            'url_image' => 'nullable|url',
         ];
     }
 
