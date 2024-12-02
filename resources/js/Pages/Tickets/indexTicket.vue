@@ -106,11 +106,28 @@ const formatDate = (date) => {
             </svg>
           </div>
           
-          <Link
-            :href="route('raffles.index')"
-            class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all duration-200"
+          <Link 
+              :href="route('raffles.index')"
+              class="inline-flex items-center px-6 py-3 bg-white text-indigo-600 border-2 border-indigo-600 rounded-xl 
+                     font-semibold text-sm uppercase tracking-wider 
+                     hover:bg-indigo-600 hover:text-white 
+                     transform hover:scale-105 transition-all duration-200 shadow-lg"
           >
-            Ver Rifas Disponibles
+              <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  class="w-5 h-5 mr-2" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+              >
+                  <path 
+                      stroke-linecap="round" 
+                      stroke-linejoin="round" 
+                      stroke-width="2" 
+                      d="M11 17l-5-5m0 0l5-5m-5 5h12"
+                  />
+              </svg>
+              Volver a Rifas
           </Link>
         </div>
       </div>
