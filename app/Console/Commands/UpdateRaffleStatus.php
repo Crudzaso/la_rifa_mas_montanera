@@ -9,19 +9,17 @@ use Carbon\Carbon;
 class UpdateRaffleStatus extends Command
 {
     protected $signature = 'raffles:update-status';
-    protected $description = 'Actualiza automáticamente el estado de las rifas según la fecha';
+    protected $description = 'Actualiza el estado de las rifas según sus fechas';
 
     public function handle()
     {
-        $this->info('Iniciando actualización de estados de rifas...');
+        $now = Carbon::now()->startOfDay();
 
-        Raffle::chunk(100, function ($raffles) {
+        Raffle::chunk(100, function ($raffles) use ($now) {
             foreach ($raffles as $raffle) {
-                $now = now();
-                $startDate = Carbon::parse($raffle->start_date);
-                $endDate = Carbon::parse($raffle->end_date);
+                $startDate = Carbon::parse($raffle->start_date)->startOfDay();
+                $endDate = Carbon::parse($raffle->end_date)->startOfDay();
 
-                // Determinar estado según fechas
                 $newStatus = null;
 
                 if ($now->lt($startDate)) {
@@ -32,14 +30,11 @@ class UpdateRaffleStatus extends Command
                     $newStatus = 'finished';
                 }
 
-                // Actualizar solo si el estado ha cambiado
                 if ($newStatus && $raffle->status !== $newStatus) {
                     $raffle->update(['status' => $newStatus]);
-                    $this->line("Rifa ID {$raffle->id} actualizada a {$newStatus}");
+                    $this->info("Rifa ID {$raffle->id}: {$newStatus}");
                 }
             }
         });
-
-        $this->info('Actualización completada!');
     }
 }

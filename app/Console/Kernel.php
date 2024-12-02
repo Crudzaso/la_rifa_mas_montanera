@@ -10,9 +10,9 @@ class Kernel extends ConsoleKernel
 {
     protected function schedule(Schedule $schedule)
     {
-        // Ejecutar cada hora
         $schedule->command('raffles:update-status')
-                ->hourly()
+                ->daily()
+                ->at('00:01')
                 ->appendOutputTo(storage_path('logs/raffles-status.log'));
     }
 }
