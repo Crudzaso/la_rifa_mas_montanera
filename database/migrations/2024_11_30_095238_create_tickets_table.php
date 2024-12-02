@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('raffle_id')->constrained()->onDelete('cascade');
-            $table->char('ticket_number', 2)->unique();
+            $table->char('ticket_number', 2);
             $table->boolean('is_winner')->default(false);
-
-            $table->unique(['user_id', 'raffle_id']);
             $table->timestamps();
+
+            
+            $table->unique(['raffle_id', 'ticket_number']);
         });
     }
 

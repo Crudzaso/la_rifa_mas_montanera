@@ -31,6 +31,11 @@ class Raffle extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function tickets()
+{
+    return $this->hasMany(Tickets::class);
+}
+
     // verificar boletos restantes
     public function getRemainingTicketsAttribute()
     {
