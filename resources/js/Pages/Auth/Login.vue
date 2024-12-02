@@ -27,6 +27,11 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
+// Función para redirigir a Google OAuth
+const redirectToGoogle = () => {
+    window.location.href = route('/auth/google');
+};
 </script>
 
 <template>
@@ -86,5 +91,14 @@ const submit = () => {
                 </PrimaryButton>
             </div>
         </form>
+
+        <!-- Botón para autenticación con Google -->
+        <div class="mt-6">
+            <button 
+                @click="redirectToGoogle" 
+                class="w-full px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                Sign in with Google
+            </button>
+        </div>
     </AuthenticationCard>
 </template>
