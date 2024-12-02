@@ -22,7 +22,7 @@ class TicketsController extends Controller
             ->where('user_id', Auth::id())
             ->get();
 
-    
+
         return Inertia::render('Tickets/indexTicket', [
             'tickets' => $tickets
         ]);
