@@ -23,12 +23,12 @@ class GoogleController extends Controller
         $this->emailHelper = $emailHelper;
     }
 
-    public function login()
+    public function redirectToGoogle()
     {
         return Socialite::driver('google')->redirect();
     }
 
-    public function callback(Request $request)
+    /* public function callback(Request $request)
     {
         try {
             $user_google = Socialite::driver('google')->user();
@@ -61,8 +61,41 @@ class GoogleController extends Controller
             return redirect()->route('usuarios.layouts')->with('success', 'Has iniciado sesión correctamente ');
 
         } catch (\Exception $e) {
-           /*  \Log::error('Google login error:', ['message' => $e->getMessage()]);
-            return redirect()->route('auth.google')->with('error', 'Error al iniciar sesión con Google.'); */
+             \Log::error('Google login error:', ['message' => $e->getMessage()]);
+            return redirect()->route('auth.google')->with('error', 'Error al iniciar sesión con Google.'); 
+        }
+    } */
+
+    public function handleGoogleCallback()
+    {
+        try {
+            $user_google = Socialite::driver('google')->user();
+            $user = User::where('email', $user_google->email)->first();
+
+            if ($user) {
+                Auth::login($user);
+                event(new UserLogin($user));
+
+                $this->emailHelper::sendLoginNotification($user);
+
+            } else {
+                $user = User::create([
+                    'names' => $user_google->name,
+                    'email' => $user_google->email,
+                ]);
+
+                GoogleUser::create([
+                    'email' => $user_google->email,
+                    'name' => $user_google->name,
+                    'user_id' => $user->id,
+                ]);
+            }
+
+            Auth::login($user);
+
+            return redirect('/dashboard');
+        } catch (\Exception $e) {
+            return redirect('/login')->with('error', 'No se pudo iniciar sesión con Google.');
         }
     }
 

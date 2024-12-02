@@ -1,3 +1,5 @@
+import { ZiggyVue } from 'ziggy';
+app.use(ZiggyVue);
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
@@ -30,7 +32,7 @@ const submit = () => {
 
 // Función para redirigir a Google OAuth
 const redirectToGoogle = () => {
-    window.location.href = route('/auth/google');
+    window.location.href = route('auth.google');
 };
 </script>
 

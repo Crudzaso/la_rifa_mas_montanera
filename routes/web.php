@@ -27,8 +27,13 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::get('/auth/google', [GoogleController::class, 'login'])->name('auth.google');
-Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
+
+
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+/* Route::get('/auth/google', [GoogleController::class, 'login'])->name('auth.google');
+Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback'); */
 
  
 /*  Route::get('auth/google/callback', function () {
