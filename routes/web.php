@@ -47,13 +47,14 @@ Route::middleware([
 
     Route::prefix('boletos')->group(function(){
         Route::get('/',[TicketsController::class,'index'])->name('tickets.index');
-        Route::get('/crear',[TicketsController::class,'create'])->name('tickets.create');
+        Route::get('/Comprar/{raffle_id}',[TicketsController::class,'create'])->name('tickets.create');
         Route::post('/',[TicketsController::class,'store'])->name('tickets.store');
         Route::get('/{ticket}/editar',[TicketsController::class,'edit'])->name('tickets.edit');
         Route::put('/{ticket}',[TicketsController::class,'update'])->name('tickets.update');
         Route::delete('/{ticket}',[TicketsController::class,'destroy'])->name('tickets.destroy');
+        Route::get('/{ticket}', [TicketsController::class, 'show'])->name('tickets.show');
     });
-    
+
 });
 
 
