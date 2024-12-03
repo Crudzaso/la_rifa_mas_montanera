@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Raffles\RaffleController;
 use App\Http\Controllers\Tickts\TicketsController;
+use App\Models\Raffle;
 
 
 Route::get('/', function () {
@@ -14,15 +15,16 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
+        'raffles' => Raffle::all()
     ]);
-});
+})->name('welcome');
 
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
+    Route::get('/organizador', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
@@ -54,6 +56,9 @@ Route::middleware([
         Route::delete('/{ticket}',[TicketsController::class,'destroy'])->name('tickets.destroy');
         Route::get('/{ticket}', [TicketsController::class, 'show'])->name('tickets.show');
     });
+
+
+    Route::get('/rifas/ver', [RaffleController::class, 'publicIndex'])->name('raffles.public');
 
 });
 

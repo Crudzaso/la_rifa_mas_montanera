@@ -8,6 +8,8 @@ use App\Models\Raffle;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
 
 class RaffleController extends Controller
 {
@@ -21,6 +23,15 @@ class RaffleController extends Controller
         return Inertia::render('Raffles/indexRaffle',compact('raffles'));
         dd($raffles);
     }
+
+    public function welcome()
+{
+    $raffles = Raffle::all();
+        
+    return Inertia::render('Welcome', [
+        'raffles' => $raffles
+    ]);
+}
 
     /**
      * Show the form for creating a new resource.

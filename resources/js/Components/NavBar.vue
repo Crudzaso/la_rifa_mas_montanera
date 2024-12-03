@@ -1,4 +1,3 @@
-<!-- Components/NavBar.vue -->
 <script setup>
 import { ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
@@ -8,10 +7,30 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 
 const navLinks = [
-  { name: 'Dashboard', route: 'dashboard' },
-  { name: 'Usuarios', route: 'users.index' },
-  { name: 'Rifas', route: 'raffles.index' },
-  { name: 'Boletos', route: 'tickets.index' }
+  {
+    name: 'Organizador',
+    route: 'dashboard'
+  },
+  {
+    name: 'Usuarios',
+    route: 'users.index',
+    submenu: [
+      { name: 'Ver Usuarios', route: 'users.index' },
+      { name: 'Crear Usuario', route: 'users.create' }
+    ]
+  },
+  {
+    name: 'Rifas',
+    route: 'raffles.index',
+    submenu: [
+      { name: 'Ver Rifas', route: 'raffles.index' },
+      { name: 'Crear Rifa', route: 'raffles.create' }
+    ]
+  },
+  {
+    name: 'Boletos',
+    route: 'tickets.index'
+  }
 ];
 
 defineProps({
@@ -41,18 +60,45 @@ const getInitials = (fullName) => {
             <Logo colorClass="text-[#4F772D]" textColorClass="text-[#31572C]" class="py-4"/>
           </Link>
 
-          <!-- Links con hover effects -->
+          <!-- Links con submenús -->
           <div class="hidden space-x-4 sm:-my-px sm:ms-10 sm:flex items-center">
-            <NavLink
-              v-for="(link, index) in navLinks"
-              :key="index"
-              :href="route(link.route)"
-              :active="route().current(link.route)"
-              class="relative font-montserrat group px-3 py-2"
-            >
-              <span class="relative z-10">{{ link.name }}</span>
-              <div class="absolute inset-0 bg-[#4F772D]/10 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 ease-out"/>
-            </NavLink>
+            <div v-for="(link, index) in navLinks" :key="index" class="relative group">
+              <NavLink
+                :href="route(link.route)"
+                :active="route().current(link.route)"
+                class="relative font-montserrat px-3 py-2"
+              >
+                <span class="relative z-10 flex items-center">
+                  {{ link.name }}
+                  <svg
+                    v-if="link.submenu"
+                    class="ml-1 h-4 w-4 transform group-hover:rotate-180 transition-transform duration-300"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </span>
+              </NavLink>
+
+              <!-- Submenú -->
+              <div
+                v-if="link.submenu"
+                class="absolute left-0 mt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-left"
+              >
+                <div class="bg-white/90 backdrop-blur-md rounded-xl shadow-xl border border-[#4F772D]/20 overflow-hidden py-1">
+                  <Link
+                    v-for="(subItem, subIndex) in link.submenu"
+                    :key="subIndex"
+                    :href="route(subItem.route)"
+                    class="block px-4 py-2 text-sm text-[#31572C] hover:bg-[#ECF39E]/20 transition-colors duration-200"
+                  >
+                    {{ subItem.name }}
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -130,3 +176,14 @@ const getInitials = (fullName) => {
     </div>
   </nav>
 </template>
+
+<style scoped>
+.group:hover .group-hover\:rotate-180 {
+  transform: rotate(180deg);
+}
+
+.group:hover .group-hover\:opacity-100 {
+  opacity: 1;
+  visibility: visible;
+}
+</style>

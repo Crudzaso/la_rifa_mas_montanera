@@ -4,6 +4,7 @@ import Logo from '@/Components/LogoText.vue';
 import Carousel from '@/Components/Carousel.vue';
 import backgroundImage from '@/assets/images/background.png';
 import Footer from '@/Components/Footer.vue';
+import CarouselRaffles from '@/Components/CarouselRaffles.vue';
 
 defineProps({
   canLogin: {
@@ -20,6 +21,10 @@ defineProps({
     type: String,
     required: true,
   },
+  raffles: {
+    type: Array,
+    default: () => []
+  }
 });
 
 function handleImageError() {
@@ -39,7 +44,7 @@ function handleImageError() {
         <div class="flex justify-between h-20">
             <a class="py-3" href="/"><Logo colorClass="text-[#4F772D]" textColorClass="text-[#31572C]" /></a>
           <div class="flex items-center space-x-4">
-            <a href="/login" class="px-4 py-2 text-[#31572C] hover:text-[#132A13] font-montserrat transition-colors duration-200">
+            <a href="/login" class="px-4 py-2 text[#31572C] hover:text-[#132A13] text-black  font-montserrat  hover:scale-105 transition-all duration-200">
               Iniciar Sesión
             </a>
             <a href="/register" class="px-6 py-3 bg-[#4F772D] hover:bg-[#31572C] text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-montserrat">
@@ -51,7 +56,7 @@ function handleImageError() {
     </nav>
 
     <!--gradiente verde -->
-    <div class="relative overflow-hidden bg-gradient-to-br from-[#31572C] to-[#132A13] py-12 sm:py-16 lg:py-24">
+    <div class="relative overflow-hidden bg-gradient-to-br from-[#101d0ebe] to-[#132a13d8] py-12 sm:py-16 lg:py-24">
       <!-- Imagen de fondo con overlay -->
       <div
         class="absolute inset-0 mix-blend-overlay opacity-10"
@@ -197,6 +202,16 @@ function handleImageError() {
       </div>
     </div>
 
+    <!-- Sección de Rifas Disponibles -->
+    <div class="py-12 sm:py-16 lg:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-4xl font-serif text-center mb-16 text-[#31572C]">
+          Rifas Disponibles
+        </h2>
+        <CarouselRaffles :raffles="raffles" />
+      </div>
+    </div>
+
     <!-- Cards con bordes verdes -->
     <div class="rounded-2xl border-2 border-[#4F772D]/20 bg-white">
       <div class="py-12 sm:py-16 lg:py-24">
@@ -213,7 +228,7 @@ function handleImageError() {
               >
                 <img
                   src="/path/to/creator1.jpg"
-                  alt="Creador 1"
+                  alt="Davi"
                   class="w-full h-96 object-cover"
                 />
                 <div
@@ -232,7 +247,7 @@ function handleImageError() {
               >
                 <img
                   src="/path/to/creator2.jpg"
-                  alt="Creador 2"
+                  alt="Sebastian"
                   class="w-full h-96 object-cover"
                 />
                 <div
@@ -251,7 +266,7 @@ function handleImageError() {
               >
                 <img
                   src="/path/to/creator3.jpg"
-                  alt="Creador 3"
+                  alt="Nicolas"
                   class="w-full h-96 object-cover"
                 />
                 <div
