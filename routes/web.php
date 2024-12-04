@@ -7,6 +7,7 @@ use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Raffles\RaffleController;
 use App\Http\Controllers\Tickts\TicketsController;
 use App\Models\Raffle;
+use App\Http\Controllers\API\LotteryController;
 
 
 Route::get('/', function () {
@@ -24,7 +25,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/organizador', function () {
+    Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
@@ -59,6 +60,10 @@ Route::middleware([
 
 
     Route::get('/rifas/ver', [RaffleController::class, 'publicIndex'])->name('raffles.public');
+
+    Route::prefix('api')->group(function () {
+        Route::get('loteria/resultados', [LotteryController::class, 'getResults']);
+    });
 
 });
 
