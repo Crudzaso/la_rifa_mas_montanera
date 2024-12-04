@@ -205,15 +205,15 @@ const debugDate = (date) => {
 
         <!-- Lista de rifas -->
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- Tarjeta de Rifa (más compacta) -->
+          <!-- Tarjeta de Rifa -->
           <div v-for="raffle in filteredRaffles" :key="raffle.id"
                class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-            <!-- Imagen más pequeña -->
+            <!-- Imagen-->
             <div class="relative">
               <img v-if="raffle.url_image" 
                    :src="raffle.url_image" 
                    :alt="raffle.title"
-                   class="w-full h-44 object-cover"/> <!-- Reducida de h-56 a h-44 -->
+                   class="w-full h-44 object-cover"/> 
               <div v-else class="w-full h-44 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                 <!-- Icono de imagen -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -226,11 +226,11 @@ const debugDate = (date) => {
               </span>
             </div>
 
-            <!-- Contenido más compacto -->
+            <!-- Contenido-->
             <div class="p-4 space-y-3">
               <h3 class="text-xl font-bold text-gray-800">{{ raffle.title }}</h3>
               
-              <!-- Premio con nuevo icono -->
+              <!-- Premio con  icono -->
               <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-lg">
                 <div class="flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -265,12 +265,22 @@ const debugDate = (date) => {
                 </div>
               </div>
 
-              <!-- Fecha -->
+              <!-- Fecha de compra de boletos (solo en estado pendiente) -->
+              <div v-if="raffle.status === 'pending'" class="flex items-center text-sm text-gray-600 pt-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                </svg>
+                <span class="text-xs">Compra de boletos: {{ formatDate(raffle.start_date) }}</span>
+              </div>
+
+              <!-- Fecha de juego (siempre visible) -->
               <div class="flex items-center text-sm text-gray-600 pt-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                 </svg>
-                <span class="text-xs">Juega: {{ formatDate(raffle.end_date) }}</span>
+                <span class="text-xs">Juega: {{ formatDate(raffle.end_date) }}</span> 
               </div>
 
               <!-- Botones -->
