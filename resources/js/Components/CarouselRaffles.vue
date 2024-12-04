@@ -1,28 +1,40 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
 
-defineProps({
+const props = defineProps({
   raffles: {
     type: Array,
     required: true
   }
 });
+
+const activeRaffles = computed(() => {
+  return props.raffles.filter(raffle => raffle.status === 'ongoing');
+});
+
+const formatDate = (date) => {
+    if (!date) return 'Sin fecha';
+    const fecha = new Date(date);
+    fecha.setMinutes(fecha.getMinutes() + fecha.getTimezoneOffset());
+
+    return fecha.toLocaleDateString();
+};
 </script>
 
 <template>
-  <div v-if="raffles && raffles.length > 0" class="relative w-full py-8">
+  <div v-if="activeRaffles.length > 0" class="relative w-full py-8">
     <div class="overflow-x-auto no-scrollbar">
       <div class="flex space-x-6 px-4 pb-4 animate-scroll">
-        <div v-for="raffle in raffles"
+        <div v-for="raffle in activeRaffles"
              :key="raffle.id"
-             class="relative w-80 h-[400px] flex-none rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-all duration-300">
-          <!-- Imagen -->
-          <div class="absolute inset-0 bg-gradient-to-t from-[#132A13] via-transparent">
+             class="relative w-96 h-[400px] flex-none rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+          <!-- Imagen y gradiente -->
+          <div class="absolute inset-0">
             <template v-if="raffle.url_image">
               <img :src="raffle.url_image"
                    :alt="raffle.title"
-                   class="w-full h-full object-cover opacity-75"/>
+                   class="w-full h-full object-cover"/>
             </template>
             <template v-else>
               <div class="w-full h-full flex items-center justify-center bg-[#4F772D]/10">
@@ -32,25 +44,41 @@ defineProps({
                 </svg>
               </div>
             </template>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20"></div>
           </div>
 
-          <!-- Contenido -->
-          <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
-            <h3 class="text-xl font-bold mb-2">{{ raffle.title }}</h3>
-            <div class="flex flex-col space-y-2">
-              <span class="text-lg font-semibold text-[#ECF39E]">Premio: {{ raffle.prize }}</span>
-              <span class="bg-[#4F772D] px-3 py-1 rounded-full text-sm inline-block w-fit">
-                Termina el {{ new Date(raffle.end_date).toLocaleDateString() }}
-              </span>
-            </div>
-            <div class="mt-4">
+          <!-- Título -->
+          <div class="absolute top-0 left-0 right-0 p-4 z-10">
+            <h3 class="text-xl font-bold text-white drop-shadow-lg">
+              {{ raffle.title }}
+            </h3>
+          </div>
+
+          <!-- Footer con premio, botón y fecha -->
+          <div class="absolute bottom-0 left-0 right-0 p-4 space-y-3 z-10">
+            <!-- Premio y Botón -->
+            <div class="flex items-center space-x-4">
+              <div class="flex-grow bg-[#4F772D]/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
+                <span class="text-lg font-bold text-[#ECF39E]">
+                  Premio: {{ raffle.prize }}
+                </span>
+              </div>
               <a :href="route('register')"
-                 class="inline-flex items-center px-4 py-2 bg-white text-[#132A13] rounded-lg text-sm font-bold hover:bg-[#ECF39E] transform hover:scale-105 transition-all duration-200">
+                 class="inline-flex items-center px-4 py-3 bg-[#ECF39E] text-[#132A13] rounded-lg text-bm font-bold
+                        hover:bg-white transform hover:scale-105 transition-all duration-200 shadow-lg whitespace-nowrap">
                 Participar
                 <svg class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                 </svg>
               </a>
+            </div>
+            
+            <!-- Fecha -->
+            <div class="flex justify-between items-center bg-black/50 backdrop-blur-sm rounded-lg px-4 py-2">
+              <span class="text-sm text-white font-medium">
+                Juega el {{ formatDate(raffle.end_date) }}
+              </span>
+              <div class="h-2 w-2 rounded-full bg-[#4F772D] animate-pulse"></div>
             </div>
           </div>
         </div>
@@ -63,6 +91,20 @@ defineProps({
 </template>
 
 <style scoped>
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-384px * 5)); }
+}
+
+.animate-scroll {
+  animation: scroll 60s linear infinite;
+  animation-delay: 2s;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -70,22 +112,5 @@ defineProps({
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
-}
-
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(calc(-280px * 5));
-  }
-}
-
-.animate-scroll {
-  animation: scroll 45s linear infinite;
-}
-
-.animate-scroll:hover {
-  animation-play-state: paused;
 }
 </style>
