@@ -28,45 +28,8 @@ class GoogleController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-    /* public function callback(Request $request)
-    {
-        try {
-            $user_google = Socialite::driver('google')->user();
-            $user = User::where('email', $user_google->email)->first();
 
-            if ($user) {
-                Auth::login($user);
-                event(new UserLogin($user));
-
-                $this->emailHelper::sendLoginNotification($user);
-
-            } else {
-                $user = User::create([
-                    'names' => $user_google->name,
-                    'email' => $user_google->email,
-                ]);
-
-                GoogleUser::create([
-                    'email' => $user_google->email,
-                    'name' => $user_google->name,
-                    'user_id' => $user->id,
-                ]);
-
-                Auth::login($user);
-                
-                $this->emailHelper::sendWelcomeEmail($user);
-
-                event(new UserCreated($user));
-            }
-            return redirect()->route('usuarios.layouts')->with('success', 'Has iniciado sesión correctamente ');
-
-        } catch (\Exception $e) {
-             \Log::error('Google login error:', ['message' => $e->getMessage()]);
-            return redirect()->route('auth.google')->with('error', 'Error al iniciar sesión con Google.'); 
-        }
-    } */
-
-    public function handleGoogleCallback()
+     public function handleGoogleCallback()
     {
         try {
             $user_google = Socialite::driver('google')->user();
@@ -92,8 +55,12 @@ class GoogleController extends Controller
             }
 
             Auth::login($user);
+            $this->emailHelper::sendWelcomeEmail($user);
 
-            return redirect('/dashboard');
+            event(new UserCreated($user));
+
+            return redirect()->route('dashboard')->with('success', 'Has iniciado sesión correctamente ');
+
         } catch (\Exception $e) {
             return redirect('/login')->with('error', 'No se pudo iniciar sesión con Google.');
         }
@@ -103,5 +70,6 @@ class GoogleController extends Controller
     {
         Auth::guard('web')->logout();
         return redirect()->route('login')->with('success', 'Has cerrado sesión correctamente.');
-    }
+    } 
+
 }

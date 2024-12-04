@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\GoogleController;
 use App\Models\User;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -29,33 +30,19 @@ Route::middleware([
 
 
 
-Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
-Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+/* Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']); */
 
 /* Route::get('/auth/google', [GoogleController::class, 'login'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback'); */
 
+Route::get('/auth/google', function () {
+    return Socialite::driver('google')->redirect();
+})->name('auth.google');
  
-/*  Route::get('auth/google/callback', function () {
-    return Socialite::driver('google')->user();
+Route::get('/auth/google/callback', function () {
+    $user = Socialite::driver('google')->stateless()->user();
     
-
-    $userExist = User::where('external_id', $user->id)->where('external_auth', 'google')->exists();
-
-    if($userExist){
-        Auth::login($userExist);
-    }else{
-        $userNew = User::create([
-            'name'=> $user->name,
-            'email'=> $user->email,
-            'avatar'=> $user->avatar,
-            'external_id'=> $user->id,
-            'external_auth'=> 'google',
-        ]);
-
-        Auth::login($userNew);
-    }
-
     return redirect('/dashboard');
 
-});  */
+});  
