@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0d9d0dc01405351c9890d9a14434ce99",
+    "content-hash": "485c302ae9fecc281fa0f1acd8aeb6f6",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2273,6 +2273,45 @@
                 }
             ],
             "time": "2024-09-21T08:32:55+00:00"
+        },
+        {
+            "name": "mercadopago/dx-php",
+            "version": "3.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mercadopago/sdk-php.git",
+                "reference": "b03c3c789c7d4fedfcf7d54cf57993e77c95aabb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mercadopago/sdk-php/zipball/b03c3c789c7d4fedfcf7d54cf57993e77c95aabb",
+                "reference": "b03c3c789c7d4fedfcf7d54cf57993e77c95aabb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.22",
+                "phpunit/phpunit": "^10.2",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MercadoPago\\": "src/MercadoPago"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Mercado Pago PHP SDK",
+            "homepage": "https://github.com/mercadopago/sdk-php",
+            "support": {
+                "source": "https://github.com/mercadopago/sdk-php/tree/3.0.8"
+            },
+            "time": "2024-09-03T12:26:16+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",
