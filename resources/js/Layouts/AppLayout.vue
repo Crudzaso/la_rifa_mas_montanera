@@ -17,14 +17,14 @@ const logout = () => {
 </script>
 
 <template>
-    <div class="flex flex-col min-h-screen bg-gradient-to-br from-[#ECF39E] via-white to-[#90A955]">
+    <div class="flex flex-col min-h-screen bg-gradient-to-br from-[#edf593] via-white to-[#90A955]">
         <Head :title="title" />
         <Banner />
         <div class="flex-grow">
             <NavBar :auth="$page.props.auth" />
 
             <!-- Page Heading -->
-            <header v-if="$slots.header" class="bg-white/80 backdrop-blur-sm shadow-md border-b border-[#4F772D]/20">
+            <header v-if="$slots.header" class="bg-gradient-to-r from-[#edf593]/40 to-[#90A955]/80 backdrop-blur-sm shadow-md border-b border-[#4F772D]/20">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>

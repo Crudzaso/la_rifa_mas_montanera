@@ -77,12 +77,12 @@ const formatDate = (date) => {
 <template>
     <AppLayout title="Loterias">
         <template #header>
-            <h2 class="font-semibold text-2xl text-[#242724] leading-tight text-center flex items-center justify-center gap-2">
+            <h2 class="font-semibold text-2xl text-[#31572C] leading-tight text-center flex items-center justify-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Resultados del <span class="text-black ml-1">{{ formatDate(selectedDate) }}</span>
+                Resultados del <span class="text-[#4F772D] font-bold ml-1">{{ formatDate(selectedDate) }}</span>
             </h2>
         </template>
 
