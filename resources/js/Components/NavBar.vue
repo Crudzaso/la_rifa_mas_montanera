@@ -52,161 +52,86 @@ const getInitials = (fullName) => {
 </script>
 
 <template>
-  <nav
-    class="sticky top-0 z-50 bg-gradient-to-r from-[#4F772D]/5 to-[#ECF39E]/20 backdrop-blur-md border-b border-[#4F772D]/20 shadow-lg"
-  >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
-      <div class="flex justify-between h-28">
-        <!-- Logo con animación -->
+  <nav class="sticky top-0 z-50">
+    <!-- Fondo con montañas -->
+    <div class="absolute inset-0 bg-gradient w-full">
+      <div class="mountain-bg"></div>
+    </div>
 
-        <div class="flex">
-          <Link :href="route('raffles.index')">
-            <Logo
-              colorClass="text-[#4F772D]"
-              textColorClass="text-[#31572C]"
-              class="py-4"
-            />
-          </Link>
+    <!-- Contenido del nav -->
+    <div class="relative z-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+        <div class="flex justify-between h-28">
+          <!-- Logo y Links principales -->
+          <div class="flex items-center space-x-6">
+            <!-- Logo -->
+            <Link :href="route('raffles.index')">
+              <Logo
+                colorClass="text-[#4F772D]"
+                textColorClass="text-[#31572C]"
+                class="py-4"
+              />
+            </Link>
 
-          <!-- Links con submenús -->
-          <div class="hidden space-x-4 sm:-my-px sm:ms-10 sm:flex items-center">
-            <div
-              v-for="(link, index) in navLinks"
-              :key="index"
-              class="relative group"
-            >
-              <NavLink
-                :href="route(link.route)"
-                :active="route().current(link.route)"
-                class="relative font-montserrat px-3 py-2"
-              >
-                <span class="relative z-10 flex items-center">
-                  {{ link.name }}
-                  <svg
-                    v-if="link.submenu"
-                    class="ml-1 h-4 w-4 transform group-hover:rotate-180 transition-transform duration-300"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </span>
-              </NavLink>
-
-              <!-- Submenú -->
-              <div
-                v-if="link.submenu"
-                class="absolute left-0 mt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-left"
-              >
-                <div
-                  class="bg-white/90 backdrop-blur-md rounded-xl shadow-xl border border-[#4F772D]/20 overflow-hidden py-1"
-                >
-                  <Link
-                    v-for="(subItem, subIndex) in link.submenu"
-                    :key="subIndex"
-                    :href="route(subItem.route)"
-                    class="block px-4 py-2 text-sm text-[#31572C] hover:bg-[#ECF39E]/20 transition-colors duration-200"
-                  >
-                    {{ subItem.name }}
-                  </Link>
+            <!-- Links de navegación -->
+            <div class="flex items-center space-x-4">
+              <template v-for="link in navLinks" :key="link.route">
+                <!-- Link con submenú -->
+                <div v-if="link.submenu" class="relative group">
+                  <button class="flex items-center space-x-1 px-4 py-2 rounded-lg text-[#31572C] hover:bg-[#4F772D]/10 transition-all duration-200">
+                    <span>{{ link.name }}</span>
+                    <svg class="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div class="absolute left-0 mt-2 w-48 rounded-xl bg-white/80 backdrop-blur-sm shadow-lg border border-[#4F772D]/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <div class="py-1">
+                      <Link v-for="sublink in link.submenu" :key="sublink.route"
+                            :href="route(sublink.route)"
+                            class="block px-4 py-2 text-sm text-[#31572C] hover:bg-[#4F772D]/10">
+                        {{ sublink.name }}
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-              </div>
+                <!-- Link sin submenú -->
+                <NavLink v-else
+                        :href="route(link.route)"
+                        :active="route().current(link.route)"
+                        class="px-4 py-2 rounded-lg text-[#31572C] hover:bg-[#4F772D]/10">
+                  {{ link.name }}
+                </NavLink>
+              </template>
             </div>
           </div>
-        </div>
 
-        <!-- Botones Auth mejorados -->
-        <div class="flex items-center space-x-4">
-          <template v-if="!auth.user">
-            <Link
-              :href="route('login')"
-              class="relative overflow-hidden px-4 py-2 text-[#31572C] font-montserrat group"
-            >
-              <span class="relative z-10">Iniciar Sesión</span>
-              <div
-                class="absolute inset-0 bg-[#4F772D]/10 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"
-              />
-            </Link>
-            <Link
-              :href="route('register')"
-              class="relative overflow-hidden px-6 py-3 bg-gradient-to-r from-[#4F772D] to-[#31572C] text-white rounded-xl shadow-lg group transform hover:scale-105 transition-all duration-300 font-montserrat"
-            >
-              <span class="relative z-10">Registrarse</span>
-              <div
-                class="absolute inset-0 bg-white/20 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"
-              />
-            </Link>
-          </template>
-
-          <template v-else>
+          <!-- Dropdown de usuario con nombre e iniciales -->
+          <div class="flex items-center">
             <Dropdown align="right" width="48">
               <template #trigger>
-                <button
-                  type="button"
-                  class="group inline-flex items-center gap-3 px-4 py-2 font-montserrat text-[#31572C] rounded-lg hover:bg-[#4F772D]/10 transition-all duration-300"
-                >
-                  <!-- Círculo con inicial -->
-                  <div
-                    class="relative w-10 h-10 rounded-full bg-gradient-to-br from-[#4F772D] to-[#90A955] flex items-center justify-center transform group-hover:scale-105 transition-all duration-300 shadow-lg"
-                  >
-                    <span
-                      class="text-white font-montserrat font-semibold text-lg"
-                    >
-                      {{ getInitials(auth.user.name) }}
-                    </span>
-                    <!-- Overlay hover -->
-                    <div
-                      class="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    ></div>
+                <button class="flex items-center space-x-2 text-sm font-medium text-[#31572C] hover:bg-[#4F772D]/10 transition-all duration-200 rounded-lg px-4 py-2">
+                  <div class="w-8 h-8 rounded-full bg-[#4F772D] flex items-center justify-center text-white font-semibold">
+                    {{ getInitials(auth.user.name) }}
                   </div>
-
-                  <div class="flex items-center">
-                    <span class="font-medium">{{ auth.user.name }}</span>
-                    <svg
-                      class="ms-2 h-5 w-5 transform group-hover:rotate-180 transition-transform duration-300"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                      />
-                    </svg>
-                  </div>
+                  <span class="ml-2">{{ auth.user.name }}</span>
+                  <svg class="fill-current h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
                 </button>
               </template>
 
               <template #content>
-                <div
-                  class="bg-white/90 backdrop-blur-md rounded-xl shadow-xl border border-[#4F772D]/20 overflow-hidden"
-                >
-                  <DropdownLink
-                    :href="route('profile.show')"
-                    class="block px-4 py-3 text-[#31572C] hover:bg-[#ECF39E]/20 transition-colors duration-200"
-                  >
-                    Perfil
+                <DropdownLink :href="route('profile.show')">
+                  Perfil
+                </DropdownLink>
+                <form @submit.prevent="$root.submit('post', route('logout'))">
+                  <DropdownLink as="button">
+                    Cerrar Sesión
                   </DropdownLink>
-                  <form @submit.prevent="$inertia.post(route('logout'))">
-                    <DropdownLink
-                      as="button"
-                      class="w-full text-left px-4 py-3 text-[#31572C] hover:bg-[#ECF39E]/20 transition-colors duration-200"
-                    >
-                      Cerrar Sesion
-                    </DropdownLink>
-                  </form>
-                </div>
+                </form>
               </template>
             </Dropdown>
-          </template>
+          </div>
         </div>
       </div>
     </div>
@@ -214,12 +139,55 @@ const getInitials = (fullName) => {
 </template>
 
 <style scoped>
-.group:hover .group-hover\:rotate-180 {
-  transform: rotate(180deg);
+.bg-gradient {
+  background: linear-gradient(to bottom right, rgba(237, 245, 147, 0.8), rgba(144, 169, 85, 0.6));
+  backdrop-filter: blur(8px);
 }
 
-.group:hover .group-hover\:opacity-100 {
-  opacity: 1;
-  visibility: visible;
+.mountain-bg::before,
+.mountain-bg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.mountain-bg::before {
+  height: 60%;
+  background: linear-gradient(165deg,
+    rgba(79, 119, 45, 0.2) 0%,
+    rgba(49, 87, 44, 0.1) 50%,
+    rgba(144, 169, 85, 0.15) 100%
+  );
+  clip-path: polygon(
+    0 100%,
+    15% 65%,
+    30% 85%,
+    50% 55%,
+    70% 80%,
+    85% 60%,
+    100% 85%,
+    100% 100%
+  );
+}
+
+.mountain-bg::after {
+  height: 65%;
+  background: linear-gradient(165deg,
+    rgba(79, 119, 45, 0.15) 0%,
+    rgba(49, 87, 44, 0.08) 50%,
+    rgba(144, 169, 85, 0.1) 100%
+  );
+  clip-path: polygon(
+    0 100%,
+    20% 70%,
+    40% 90%,
+    60% 60%,
+    80% 85%,
+    100% 70%,
+    100% 100%
+  );
 }
 </style>

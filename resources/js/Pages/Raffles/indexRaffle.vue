@@ -43,21 +43,21 @@ const calculateStatus = (raffle) => {
 };
 
 const searchQuery = ref('');
-const searchType = ref('title'); 
+const searchType = ref('title');
 
 // Modificar filteredRaffles para incluir búsqueda y ordenamiento
 const filteredRaffles = computed(() => {
     if (!raffles) return [];
-    
+
     return raffles
         .filter(raffle => {
             const matchesStatus = raffle.status === activeTab.value;
             const searchText = searchQuery.value.toLowerCase();
-            
-            const matchesSearch = searchType.value === 'title' 
+
+            const matchesSearch = searchType.value === 'title'
                 ? raffle.title.toLowerCase().includes(searchText)
                 : raffle.prize.toLowerCase().includes(searchText);
-            
+
             return matchesStatus && matchesSearch;
         })
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -112,28 +112,24 @@ const changeTab = (tab) => {
     activeTab.value = tab;
 };
 
-// Función para debug
-const debugDate = (date) => {
-    console.log('Fecha original:', date);
-    console.log('Fecha formateada:', formatDate(date));
-};
 </script>
 
 <template>
-  <AppLayout title="Rifa">
-    <Alert
-      v-if="showMessage"
-      :message="message"
-      :type="'Éxito'"
-    />
+  <AppLayout title="Rifas">
+    <Alert v-if="showMessage" :message="message" :type="'Éxito'" />
 
     <template #header>
       <div class="flex justify-between items-center">
-        <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
-          Rifas
+        <h2 class="font-semibold text-2xl text-[#31572C] leading-tight flex items-center gap-3">
+          <img src="@/assets/images/background.png" alt="Logo" class="w-8 h-8 object-contain">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+          </svg>
+          Rifas más Montañeras
         </h2>
         <Link :href="route('raffles.create')"
-              class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold text-sm uppercase tracking-wider hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg">
+              class="inline-flex items-center px-6 py-3 bg-white/90 text-[#31572C] rounded-xl font-bold text-sm hover:bg-[#ECF39E] transform hover:scale-105 transition-all duration-200 shadow-xl">
           <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
           </svg>
@@ -142,32 +138,108 @@ const debugDate = (date) => {
       </div>
     </template>
 
+    <!-- Pasos para comprar-->
+    <div class="py-12 relative overflow-hidden bg-gradient-to-br from-white/80 to-[#ECF39E]/20 group hover:from-gray-800/5 hover:to-[#31572C]/10 transition-all duration-700 backdrop-blur-md">
+      <!-- Logo Background -->
+      <div class="absolute right-0 top-0 opacity-5 transform rotate-12 translate-x-0
+              group-hover:opacity-20
+              group-hover:rotate-6
+              group-hover:scale-110
+              group-hover:-translate-x-10
+              transition-all duration-700 ease-in-out">
+        <img src="@/assets/images/background.png" alt="Background Logo" class="w-96 h-96 object-contain"/>
+      </div>
+
+      <!-- Overlay -->
+      <div class="absolute inset-0 bg-gradient-to-br from-transparent to-transparent
+              group-hover:from-gray-900/10
+              group-hover:to-transparent
+              transition-all duration-700"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <h2 class="text-4xl font-serif text-center mb-16 text-[#31572C] transform transition-all duration-500 group-hover:scale-105 group-hover:text-[#4F772D]">
+          ¿Cómo Participar?
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <!-- Paso 1: Buscar -->
+          <div class="group/card transform transition-all duration-500 hover:-translate-y-3 hover:rotate-1">
+            <div class="flex flex-col items-center">
+              <div class="bg-gradient-to-br from-[#4F772D]/10 to-[#90A955]/30 rounded-2xl p-6 mb-6 shadow-xl">
+                <svg class="h-12 w-12 text-[#31572C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <h3 class="text-2xl font-serif mb-4 text-[#31572C]">1. Busca</h3>
+              <p class="text-center text-[#4F772D] px-6">
+                Explora las rifas disponibles y encuentra los mejores premios.
+              </p>
+            </div>
+          </div>
+
+          <!-- Paso 2: Selecciona -->
+          <div class="group/card transform transition-all duration-500 hover:-translate-y-3 hover:rotate-1">
+            <div class="flex flex-col items-center">
+              <div class="bg-gradient-to-br from-[#4F772D]/10 to-[#90A955]/30 rounded-2xl p-6 mb-6 shadow-xl group-hover/card:shadow-2xl group-hover/card:from-[#4F772D]/20 group-hover/card:to-[#90A955]/40 transition-all duration-700">
+                <svg class="h-12 w-12 text-[#31572C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                </svg>
+              </div>
+              <h3 class="text-2xl font-serif mb-4 text-[#31572C] group-hover/card:text-[#4F772D] transition-colors duration-300">
+                2. Selecciona
+              </h3>
+              <p class="text-center text-[#4F772D] px-6 opacity-90 group-hover/card:opacity-100">
+                Elige tus números favoritos. ¡Cada número es una oportunidad!
+              </p>
+            </div>
+          </div>
+
+          <!-- Paso 3: Espera -->
+          <div class="group/card transform transition-all duration-500 hover:-translate-y-3 hover:rotate-1">
+            <div class="flex flex-col items-center">
+              <div class="bg-gradient-to-br from-[#4F772D]/10 to-[#90A955]/30 rounded-2xl p-6 mb-6 shadow-xl group-hover/card:shadow-2xl group-hover/card:from-[#4F772D]/20 group-hover/card:to-[#90A955]/40 transition-all duration-700">
+                <svg class="h-12 w-12 text-[#31572C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 class="text-2xl font-serif mb-4 text-[#31572C] group-hover/card:text-[#4F772D] transition-colors duration-300">
+                3. Espera
+              </h3>
+              <p class="text-center text-[#4F772D] px-6 opacity-90 group-hover/card:opacity-100">
+                Aguarda al día del sorteo. ¡La suerte puede estar de tu lado!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Barra de búsqueda y filtros -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-      <div class="flex items-center space-x-4 mb-6">
+      <div class="flex flex-col md:flex-row gap-4 mb-6">
         <div class="flex-1 relative">
           <input
             v-model="searchQuery"
             type="text"
             :placeholder="searchType === 'title' ? 'Buscar por nombre...' : 'Buscar por premio...'"
-            class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
+            class="w-full px-4 py-3 rounded-xl border border-[#4F772D]/20 focus:ring-2 focus:ring-[#4F772D]/50 focus:border-[#4F772D] shadow-sm bg-white/80 backdrop-blur-sm"
           />
-          <svg class="absolute right-3 top-3 h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-          </svg>
         </div>
         <select
           v-model="searchType"
-          class="px-8 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm"
+          class="px-8 py-3 rounded-xl border border-[#4F772D]/20 focus:ring-2 focus:ring-[#4F772D]/50 focus:border-[#4F772D] shadow-sm bg-white/80 backdrop-blur-sm text-[#31572C]"
         >
           <option value="title">Buscar por nombre</option>
           <option value="prize">Buscar por premio</option>
         </select>
       </div>
 
-      <!-- Pestañas mejoradas -->
+      <!-- Pestañas-->
       <div class="flex justify-center mb-8">
-        <nav class="flex space-x-2 bg-gray-100 p-1 rounded-xl">
+        <nav class="flex space-x-2 bg-white/50 backdrop-blur-sm p-1 rounded-xl shadow-md border border-[#4F772D]/20">
           <button
             v-for="tab in tabStates"
             :key="tab"
@@ -175,8 +247,8 @@ const debugDate = (date) => {
             class="px-6 py-2.5 rounded-lg font-medium text-sm transition-all duration-200"
             :class="[
               activeTab === tab
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-[#4F772D] text-white shadow-sm'
+                : 'text-[#31572C] hover:bg-[#4F772D]/10'
             ]"
           >
             {{ getStatusTranslation(tab) }}
@@ -185,16 +257,17 @@ const debugDate = (date) => {
       </div>
     </div>
 
+    <!-- Lista de rifas -->
     <div class="py-12">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <!-- Mensaje cuando no hay rifas -->
         <div v-if="filteredRaffles.length === 0"
-             class="bg-white p-8 rounded-lg shadow-md text-center">
-          <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+             class="bg-white/80 backdrop-blur-sm p-8 rounded-xl shadow-xl border border-[#4F772D]/20 text-center">
+          <svg class="mx-auto h-12 w-12 text-[#4F772D] mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 14h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <p class="text-gray-500 text-lg">
+          <p class="text-[#31572C] text-lg">
             {{
               activeTab === 'ongoing' ? 'No hay rifas en juego' :
               activeTab === 'pending' ? 'No hay rifas pendientes' :
@@ -203,17 +276,16 @@ const debugDate = (date) => {
           </p>
         </div>
 
-        <!-- Lista de rifas -->
+        <!-- Grid de rifas -->
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- Tarjeta de Rifa -->
           <div v-for="raffle in filteredRaffles" :key="raffle.id"
-               class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+               class="bg-white/80 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-1 border border-[#4F772D]/20">
             <!-- Imagen-->
             <div class="relative">
-              <img v-if="raffle.url_image" 
-                   :src="raffle.url_image" 
+              <img v-if="raffle.url_image"
+                   :src="raffle.url_image"
                    :alt="raffle.title"
-                   class="w-full h-44 object-cover"/> 
+                   class="w-full h-44 object-cover"/>
               <div v-else class="w-full h-44 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                 <!-- Icono de imagen -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -226,10 +298,10 @@ const debugDate = (date) => {
               </span>
             </div>
 
-            <!-- Contenido-->
+            <!-- Contenido de la tarjeta -->
             <div class="p-4 space-y-3">
               <h3 class="text-xl font-bold text-gray-800">{{ raffle.title }}</h3>
-              
+
               <!-- Premio con  icono -->
               <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-lg">
                 <div class="flex items-center">
@@ -265,35 +337,35 @@ const debugDate = (date) => {
                 </div>
               </div>
 
-              <!-- Fecha de compra de boletos (solo en estado pendiente) -->
+              <!-- Fecha de compra de boletos -->
               <div v-if="raffle.status === 'pending'" class="flex items-center text-sm text-gray-600 pt-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
                 </svg>
                 <span class="text-xs">Compra de boletos: {{ formatDate(raffle.start_date) }}</span>
               </div>
 
-              <!-- Fecha de juego (siempre visible) -->
+              <!-- Fecha de juego  -->
               <div class="flex items-center text-sm text-gray-600 pt-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                 </svg>
-                <span class="text-xs">Juega: {{ formatDate(raffle.end_date) }}</span> 
+                <span class="text-xs">Juega: {{ formatDate(raffle.end_date) }}</span>
               </div>
 
               <!-- Botones -->
               <div class="flex justify-end space-x-2 pt-2">
-                <Link :href="route('raffles.edit', raffle.id)" 
-                      class="text-sm px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100">
+                <Link :href="route('raffles.edit', raffle.id)"
+                      class="text-sm px-3 py-1.5 bg-[#4F772D]/10 text-[#31572C] rounded-lg hover:bg-[#4F772D]/20">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                   </svg>
                 </Link>
                 <Link v-if="raffle.status === 'ongoing'"
                       :href="route('tickets.create', { raffle_id: raffle.id })"
-                      class="text-sm px-4 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                      class="text-sm px-4 py-1.5 bg-[#4F772D] text-white rounded-lg hover:bg-[#31572C]">
                   Comprar
                 </Link>
               </div>
