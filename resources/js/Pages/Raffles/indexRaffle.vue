@@ -279,93 +279,91 @@ const changeTab = (tab) => {
         <!-- Grid de rifas -->
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div v-for="raffle in filteredRaffles" :key="raffle.id"
-               class="bg-white/80 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-1 border border-[#4F772D]/20">
-            <!-- Imagen-->
-            <div class="relative">
+               class="bg-white/80 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-[#4F772D]/20 group/card">
+            <!-- Imagen con overlay -->
+            <div class="relative overflow-hidden">
               <img v-if="raffle.url_image"
                    :src="raffle.url_image"
                    :alt="raffle.title"
-                   class="w-full h-44 object-cover"/>
-              <div v-else class="w-full h-44 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                <!-- Icono de imagen -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   class="w-full h-48 object-cover transform transition-transform duration-500 group-hover/card:scale-110"/>
+              <div v-else class="w-full h-48 bg-gradient-to-br from-[#4F772D]/10 to-[#90A955]/30 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-[#4F772D]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                 </svg>
               </div>
-              <!-- Estado -->
-              <span :class="[getStatusColor(raffle.status), 'absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold shadow-md']">
+              <!-- Estado con nuevo estilo -->
+              <span :class="[
+                getStatusColor(raffle.status),
+                'absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold shadow-md backdrop-blur-sm'
+              ]">
                 {{ getStatusTranslation(raffle.status) }}
               </span>
             </div>
 
             <!-- Contenido de la tarjeta -->
-            <div class="p-4 space-y-3">
-              <h3 class="text-xl font-bold text-gray-800">{{ raffle.title }}</h3>
+            <div class="p-6 space-y-4">
+              <h3 class="text-xl font-bold text-[#31572C] group-hover/card:text-[#4F772D] transition-colors duration-300">
+                {{ raffle.title }}
+              </h3>
 
-              <!-- Premio con  icono -->
-              <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-lg">
+              <!-- Premio con nuevo estilo -->
+              <div class="bg-gradient-to-br from-[#4F772D]/10 to-[#90A955]/30 p-4 rounded-xl transition-all duration-300 group-hover/card:from-[#4F772D]/20 group-hover/card:to-[#90A955]/40">
                 <div class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#4F772D] mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                   <div>
-                    <p class="text-xs text-indigo-600 font-medium">Premio</p>
-                    <p class="text-base font-bold text-indigo-900">{{ raffle.prize }}</p>
+                    <p class="text-sm text-[#4F772D] font-medium">Premio</p>
+                    <p class="text-lg font-bold text-[#31572C]">{{ raffle.prize }}</p>
                   </div>
                 </div>
               </div>
 
               <!-- Grid de información -->
-              <div class="grid grid-cols-2 gap-3">
-                <div class="bg-gray-50 p-3 rounded-lg">
-                  <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-gradient-to-br from-[#4F772D]/5 to-[#90A955]/10 p-4 rounded-xl transition-all duration-300 group-hover/card:from-[#4F772D]/10 group-hover/card:to-[#90A955]/20">
+                  <div class="flex items-center mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#4F772D] mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
                     </svg>
-                    <p class="text-xs text-gray-600">Boletos</p>
+                    <p class="text-sm text-[#4F772D]">Boletos</p>
                   </div>
-                  <p class="text-sm font-bold text-gray-900 mt-1">{{ raffle.tickets_sold }}/{{ raffle.total_tickets }}</p>
+                  <p class="text-lg font-bold text-[#31572C]">{{ raffle.tickets_sold }}/{{ raffle.total_tickets }}</p>
                 </div>
-                <div class="bg-gray-50 p-3 rounded-lg">
-                  <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+
+                <div class="bg-gradient-to-br from-[#4F772D]/5 to-[#90A955]/10 p-4 rounded-xl transition-all duration-300 group-hover/card:from-[#4F772D]/10 group-hover/card:to-[#90A955]/20">
+                  <div class="flex items-center mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#4F772D] mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <p class="text-xs text-gray-600">Precio</p>
+                    <p class="text-sm text-[#4F772D]">Precio</p>
                   </div>
-                  <p class="text-sm font-bold text-gray-900 mt-1">${{ raffle.price_tickets }}</p>
+                  <p class="text-lg font-bold text-[#31572C]">${{ raffle.price_tickets }}</p>
                 </div>
               </div>
 
-              <!-- Fecha de compra de boletos -->
-              <div v-if="raffle.status === 'pending'" class="flex items-center text-sm text-gray-600 pt-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-                </svg>
-                <span class="text-xs">Compra de boletos: {{ formatDate(raffle.start_date) }}</span>
-              </div>
-
-              <!-- Fecha de juego  -->
-              <div class="flex items-center text-sm text-gray-600 pt-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                </svg>
-                <span class="text-xs">Juega: {{ formatDate(raffle.end_date) }}</span>
+              <!-- Fechas -->
+              <div class="space-y-2 pt-2">
+                <div class="flex items-center text-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#4F772D] mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span class="text-[#4F772D]">Juega: {{ formatDate(raffle.end_date) }}</span>
+                </div>
               </div>
 
               <!-- Botones -->
-              <div class="flex justify-end space-x-2 pt-2">
+              <div class="flex justify-end items-center gap-4 pt-4">
                 <Link :href="route('raffles.edit', raffle.id)"
-                      class="text-sm px-3 py-1.5 bg-[#4F772D]/10 text-[#31572C] rounded-lg hover:bg-[#4F772D]/20">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                      class="flex items-center px-4 py-2 bg-[#4F772D]/10 text-[#31572C] rounded-lg hover:bg-[#4F772D]/20 transition-all duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                   </svg>
+                  Editar
                 </Link>
                 <Link v-if="raffle.status === 'ongoing'"
                       :href="route('tickets.create', { raffle_id: raffle.id })"
-                      class="text-sm px-4 py-1.5 bg-[#4F772D] text-white rounded-lg hover:bg-[#31572C]">
+                      class="flex items-center px-6 py-2 bg-[#4F772D] text-white rounded-lg hover:bg-[#31572C] transition-all duration-300">
                   Comprar
                 </Link>
               </div>

@@ -17,7 +17,7 @@ const logout = () => {
 </script>
 
 <template>
-    <div class="flex flex-col min-h-screen ">
+    <div class="flex flex-col min-h-screen bg-gradient-to-br from-[#ECF39E]/60 via-white to-[#90A955]">
         <Head :title="title" />
         <Banner />
         <div class="flex-grow">
