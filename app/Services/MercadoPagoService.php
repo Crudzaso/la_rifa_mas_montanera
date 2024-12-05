@@ -17,8 +17,8 @@ class MercadoPagoService
     {
         $mpAccessToken = env('MERCADO_PAGO_ACCESS_TOKEN');
         MercadoPagoConfig::setAccessToken($mpAccessToken);
-        MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
     }
+
 
     public function createPaymentPreference($items, $payer)
     {
@@ -50,7 +50,7 @@ class MercadoPagoService
             $preference = $client->create($request);
             return $preference;
         } catch (MPApiException $error) {
-            return null;
+            return $error;
         }
     }
 }

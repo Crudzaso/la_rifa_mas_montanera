@@ -45,7 +45,7 @@ class MercadoPagoController extends Controller
         if ($preference) {
             return redirect($preference->init_point); // Redirige a MercadoPago para el pago
         } else {
-            return redirect()->route('mercadopago.failed');
+            return redirect()->route('mercadopago.failure');
         }
     }
 
