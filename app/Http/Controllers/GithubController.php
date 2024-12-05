@@ -14,7 +14,7 @@ use App\Service\DiscordWebhookService;
 use App\Events\UserLogin;
 use App\Events\UserCreated;
 
-class GoogleController extends Controller
+class GithubController extends Controller
 {
     protected $emailHelper;
 
@@ -23,9 +23,9 @@ class GoogleController extends Controller
         $this->emailHelper = $emailHelper;
     }
 
-    public function redirectToGoogle()
+    public function redirectToGithub()
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('github')->redirect();
     }
 
 
@@ -34,26 +34,33 @@ class GoogleController extends Controller
     public function callback()
     {
         try {
-            // Obtener los datos del usuario de Google
-            $user_google = Socialite::driver('google')->user();
+            $user_github = Socialite::driver('github')->user();
             
 
             $user = User::firstOrCreate(
-                ['email' => $user_google->getEmail()],
+                ['email' => $user_github->getEmail()],
                 [
-                    'name' => $user_google->getName(),
-                    'avatar' => $user_google->getAvatar(), 
-                    'google_id' => $user_google->getId(),
+                    'name' => $user_github->getName(),
+                    'avatar' => $user_github->getAvatar(), 
+                    'github_id' => $user_github->getId(),
                 ]
             );
     
             Auth::login($user, true);
     
-            return redirect()->route('dashboard');
+            return redirect()->route('dashboard')->with('user_name', $user->name);
         } catch (Exception $e) {
-            return redirect('/login')->with('error', 'Error al iniciar sesión con Google');
+            return redirect('/login')->with('error', 'Error al iniciar sesión con Github');
         }
     }
+
+    public function showLoginForm()
+    {
+    return Inertia::render('Auth/Login', [
+        'user_name' => Auth::check() ? Auth::user()->name : null,
+    ]);
+    }
+
 
     public function logout(Request $request)
     {

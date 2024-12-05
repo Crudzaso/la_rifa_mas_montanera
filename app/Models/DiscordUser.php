@@ -10,7 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class DiscordUser extends Authenticatable
 {
     use HasApiTokens;
 
@@ -35,6 +35,8 @@ class User extends Authenticatable
         'avatar',
         'google_id',
         'github_id',
+        'discord_id',
+
 
     ];
 

@@ -14,7 +14,7 @@ use App\Service\DiscordWebhookService;
 use App\Events\UserLogin;
 use App\Events\UserCreated;
 
-class GoogleController extends Controller
+class DiscordController extends Controller
 {
     protected $emailHelper;
 
@@ -23,9 +23,9 @@ class GoogleController extends Controller
         $this->emailHelper = $emailHelper;
     }
 
-    public function redirectToGoogle()
+    public function redirectToDiscord()
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('discord')->redirect();
     }
 
 
@@ -34,16 +34,15 @@ class GoogleController extends Controller
     public function callback()
     {
         try {
-            // Obtener los datos del usuario de Google
-            $user_google = Socialite::driver('google')->user();
+            $user_discord = Socialite::driver('discord')->user();
             
 
             $user = User::firstOrCreate(
-                ['email' => $user_google->getEmail()],
+                ['email' => $user_discord->getEmail()],
                 [
-                    'name' => $user_google->getName(),
-                    'avatar' => $user_google->getAvatar(), 
-                    'google_id' => $user_google->getId(),
+                    'name' => $user_discord->getName(),
+                    'avatar' => $user_discord->getAvatar(), 
+                    'google_id' => $user_discord->getId(),
                 ]
             );
     
@@ -51,7 +50,7 @@ class GoogleController extends Controller
     
             return redirect()->route('dashboard');
         } catch (Exception $e) {
-            return redirect('/login')->with('error', 'Error al iniciar sesión con Google');
+            return redirect('/login')->with('error', 'Error al iniciar sesión con Discord');
         }
     }
 
