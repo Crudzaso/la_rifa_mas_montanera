@@ -50,7 +50,7 @@ const getInitials = (fullName) => {
 </script>
 
 <template>
-  <nav class="sticky top-0 z-50 bg-gradient-to-r from-white/80 to-[#ECF39E]/80 backdrop-blur-md border-b border-[#4F772D]/20 shadow-lg">
+  <nav class="sticky top-0 z-50 bg-gradient-to-r from-[#4F772D]/5 to-[#ECF39E]/20 backdrop-blur-md border-b border-[#4F772D]/20 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
       <div class="flex justify-between h-28">
         <!-- Logo con animación -->
