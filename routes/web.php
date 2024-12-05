@@ -9,7 +9,7 @@ use App\Http\Controllers\Tickts\TicketsController;
 use App\Models\Raffle;
 use App\Http\Controllers\API\LotteryController;
 
-
+// Ruta principal
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -20,6 +20,12 @@ Route::get('/', function () {
     ]);
 })->name('welcome');
 
+// Rutas API
+Route::prefix('api')->group(function () {
+    Route::get('loteria/resultados', [LotteryController::class, 'getResults']);
+});
+
+// Rutas protegidas
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -61,10 +67,5 @@ Route::middleware([
 
     Route::get('/rifas/ver', [RaffleController::class, 'publicIndex'])->name('raffles.public');
 
-    Route::prefix('api')->group(function () {
-        Route::get('loteria/resultados', [LotteryController::class, 'getResults']);
-    });
-
 });
-
 

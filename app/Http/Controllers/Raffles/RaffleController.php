@@ -8,8 +8,7 @@ use App\Models\Raffle;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Application;
+
 
 class RaffleController extends Controller
 {
@@ -18,8 +17,9 @@ class RaffleController extends Controller
      */
     public function index()
     {
+
         $raffles = Raffle::all();
-        //dd($raffles);
+
         return Inertia::render('Raffles/indexRaffle',compact('raffles'));
         dd($raffles);
     }
@@ -124,6 +124,6 @@ class RaffleController extends Controller
      */
     public function destroy(Raffle $raffle)
     {
-        //
+
     }
 }
