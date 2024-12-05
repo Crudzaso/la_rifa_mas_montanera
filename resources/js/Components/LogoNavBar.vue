@@ -18,7 +18,7 @@ const props = defineProps({
 
 <template>
   <Link
-    :href="route('dashboard')"
+    :href="route('raffles.index')"
     class="flex items-center group hover:opacity-90 transition-all duration-200"
   >
     <img

@@ -18,7 +18,7 @@ const navLinks = [
 
   {
     name: "Resultado loterias",
-    route: "dashboard",
+    route: "lottery",
   },
   {
     name: "Boletos",
@@ -31,8 +31,8 @@ const navLinks = [
       { name: "Ver Usuarios", route: "users.index" },
       { name: "Crear Usuario", route: "users.create" },
     ],
-  },    
-  
+  },
+
 ];
 
 defineProps({
@@ -60,7 +60,7 @@ const getInitials = (fullName) => {
         <!-- Logo con animación -->
 
         <div class="flex">
-          <Link :href="route('dashboard')">
+          <Link :href="route('raffles.index')">
             <Logo
               colorClass="text-[#4F772D]"
               textColorClass="text-[#31572C]"

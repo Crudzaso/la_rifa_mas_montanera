@@ -32,8 +32,8 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/loterias', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+        return Inertia::render('Lottery');
+    })->name('lottery');
 
     Route::prefix('usuarios')->group(function(){
         Route::get('/',[UserController::class,'index'])->name('users.index');

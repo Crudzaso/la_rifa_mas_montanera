@@ -24,7 +24,7 @@ const logout = () => {
             <NavBar :auth="$page.props.auth" />
 
             <!-- Page Heading -->
-            <header v-if="$slots.header" class="bg-gradient-to-r from-[#edf593]/40 to-[#90A955]/80 backdrop-blur-sm shadow-md border-b border-[#4F772D]/20">
+            <header v-if="$slots.header" class="bg-gradient-to-r from-[#90A955]/40 to-[#edf593]/80 backdrop-blur-sm shadow-md border-b border-[#4F772D]/20">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
@@ -38,7 +38,7 @@ const logout = () => {
 
         <!-- Footer Slot -->
         <slot name="footer">
-            <Footer /> 
+            <Footer />
         </slot>
     </div>
 </template>
