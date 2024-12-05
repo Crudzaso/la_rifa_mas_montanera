@@ -15,20 +15,32 @@ class ProcessLotteryResults
 
     public function execute(): array
     {
-        $results = $this->lotteryService->fetchResults();
-        
-        if (empty($results)) {
-            return ['data' => [], 'message' => 'No hay resultados disponibles.'];
-        }
+        try {
+            // Obtener resultados de lotería
+            $results = $this->lotteryService->fetchResults();
+            $antioquenitaTarde = $this->lotteryService->getAntioqueñitaTarde($results);
 
-        $antioqueñitaTarde = $this->lotteryService->getAntioqueñitaTarde($results);
-        
-        if ($antioqueñitaTarde) {
-            $this->saveLotteryResult($antioqueñitaTarde);
-            $this->processRaffles($antioqueñitaTarde['result']);
-        }
+            if (!$antioquenitaTarde) {
+                return ['data' => []];
+            }
 
-        return ['data' => $results];
+            // Obtener último número ganador
+            $winningNumber = $this->lotteryService->getLastTwoDigits($antioquenitaTarde['result']);
+
+            // Obtener rifas que terminan hoy
+            $todayRaffles = $this->raffleService->getTodayEndingRaffles();
+
+            foreach ($todayRaffles as $raffle) {
+                // Actualizar tickets ganadores
+                $this->raffleService->updateWinningTickets($winningNumber, $raffle);
+                // Finalizar la rifa
+                $this->raffleService->finalizeRaffle($raffle);
+            }
+
+            return ['data' => $results];
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     private function saveLotteryResult(array $result): void
@@ -46,14 +58,5 @@ class ProcessLotteryResults
         );
     }
 
-    private function processRaffles(string $result): void
-    {
-        $winningNumber = $this->lotteryService->getLastTwoDigits($result);
-        $raffles = $this->raffleService->getTodayEndingRaffles();
-
-        foreach ($raffles as $raffle) {
-            $this->raffleService->updateWinningTickets($winningNumber, $raffle);
-            $this->raffleService->finalizeRaffle($raffle);
-        }
-    }
+    
 }

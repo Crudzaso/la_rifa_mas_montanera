@@ -13,7 +13,21 @@ class UpdateRaffleStatus extends Command
 
     public function handle()
     {
-        $now = Carbon::now()->startOfDay();
+        $now = Carbon::now();
+
+        // Finalizar rifas que jugaban hoy
+        Raffle::where('end_date', $now->format('Y-m-d'))
+            ->where('status', 'ongoing')
+            ->chunk(100, function ($raffles) {
+                foreach ($raffles as $raffle) {
+                    $raffle->update(['status' => 'finished']);
+                    $this->info("Rifa ID {$raffle->id} finalizada");
+                }
+            });
+
+        if ($now->format('H:i') === '16:07') {
+            $this->checkLotteryResults();
+        }
 
         Raffle::chunk(100, function ($raffles) use ($now) {
             foreach ($raffles as $raffle) {
@@ -22,7 +36,9 @@ class UpdateRaffleStatus extends Command
 
                 $newStatus = null;
 
-                if ($now->lt($startDate)) {
+                if ($raffle->tickets()->where('is_winner', true)->exists()) {
+                    $newStatus = 'finished';
+                } elseif ($now->lt($startDate)) {
                     $newStatus = 'pending';
                 } elseif ($now->between($startDate, $endDate)) {
                     $newStatus = 'ongoing';
@@ -36,5 +52,10 @@ class UpdateRaffleStatus extends Command
                 }
             }
         });
+    }
+
+    private function checkLotteryResults()
+    {
+        $this->call('lottery:check-winners');
     }
 }

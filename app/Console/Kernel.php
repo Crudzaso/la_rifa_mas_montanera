@@ -9,14 +9,10 @@ class Kernel extends ConsoleKernel
 {
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('raffles:update-status')
-                ->daily()
-                ->at('00:01')
-                ->appendOutputTo(storage_path('logs/raffles-status.log'));
+        // Verificar resultados de lotería a las 4:07 PM
+        $schedule->command('lottery:check-winners')->dailyAt('16:07');
 
-        $schedule->command('lottery:check-winners')
-                ->dailyAt('16:07')
-                ->timezone('America/Bogota');
-                
+        // Actualizar estados de rifas a las 4:10 PM (después de verificar ganadores)
+        $schedule->command('raffles:update-status')->dailyAt('16:10');
     }
 }
