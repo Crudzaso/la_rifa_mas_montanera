@@ -107,6 +107,11 @@ const formatDate = (date) => {
                                     </p>
                                     <p class="text-sm font-medium text-[#31572C]">Resultado Oficial</p>
                                 </div>
+                                <div class="text-center mt-4">
+                                    <p class="text-[#4F772D] font-bold hover:text-[#31572C] transition-all duration-300">
+                                        de lunes a sabado a las 4:05 pm
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
