@@ -29,15 +29,23 @@ class StoreRequest extends FormRequest
             'prize' => 'required|string|max:255',
             'start_date' => [
                 'required',
-                'date_format:Y-m-d', // Forzar formato específico
+                'date_format:Y-m-d',
                 'after_or_equal:today',
             ],
             'end_date' => [
                 'required',
                 'date_format:Y-m-d',
                 'after_or_equal:start_date',
+                function ($attribute, $value, $fail) {
+                    if (!$value) return;
+
+                    $date = \Carbon\Carbon::createFromFormat('Y-m-d', $value);
+                    if ($date && $date->isDayOfWeek(\Carbon\Carbon::SUNDAY)) {
+                        $fail('La rifa no puede terminar en domingo.');
+                    }
+                }
             ],
-            'price_tickets' => 'required|in:2000,5000,10000,20000,50000', 
+            'price_tickets' => 'required|in:2000,5000,10000,20000,50000',
             'url_image' => 'nullable|url',
         ];
     }
@@ -59,7 +67,9 @@ class StoreRequest extends FormRequest
             'total_tickets.min' => 'El número total de boletos debe ser al menos 1.',
             'total_tickets.max' => 'El número total de boletos no puede ser mayor a 100.',
             'url_image.url' => 'La URL de la imagen debe ser una URL válida.',
-
+            'end_date.not_in' => 'La rifa no puede terminar en domingo.',
+            'end_date.after_or_equal' => 'La fecha de finalización debe ser igual o posterior a la fecha de inicio.',
+            'end_date.date_format' => 'El formato de la fecha de finalización no es válido.',
         ];
     }
 }

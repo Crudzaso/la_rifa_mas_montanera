@@ -27,7 +27,7 @@ class RaffleController extends Controller
     public function welcome()
 {
     $raffles = Raffle::all();
-        
+
     return Inertia::render('Welcome', [
         'raffles' => $raffles
     ]);
@@ -68,6 +68,7 @@ class RaffleController extends Controller
         } catch (\Throwable $th) {
             return to_route('raffles.create')
                 ->with('message', 'Error al crear la rifa');
+
         }
     }
 
