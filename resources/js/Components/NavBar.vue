@@ -8,7 +8,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 
 const navLinks = [
   {
-    name: 'Organizador',
+    name: 'Resultado loterias',
     route: 'dashboard'
   },
   {
