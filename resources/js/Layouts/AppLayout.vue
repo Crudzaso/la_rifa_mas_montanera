@@ -24,7 +24,7 @@ const logout = () => {
             <NavBar :auth="$page.props.auth" />
 
             <!-- Page Heading -->
-            <header v-if="$slots.header" class="bg-gradient-to-br from-[#467e3e49] to-[#3c8a3c48] shadow-md">
+            <header v-if="$slots.header" class="bg-gradient-to-br from-[#4b884249] to-[#41914148] shadow-md">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 backdrop-blur-sm">
                     <slot name="header" />
                 </div>

@@ -4,7 +4,7 @@ import { usePage, useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Alert from '@/Components/Alert.vue';
 import Link from '@/Components/NavLink.vue';
-import Modal from '@/Components/Modal.vue'; // Asegurarse de importar Modal
+import Modal from '@/Components/Modal.vue';
 
 const page = usePage();
 const raffle = page.props.raffle;
@@ -85,7 +85,7 @@ const getStatus = (raffle) => {
     const now = new Date();
     const endDate = new Date(raffle.end_date);
     const startDate = new Date(raffle.start_date);
-    
+
     // Ajustar las fechas al inicio del día
     now.setHours(0, 0, 0, 0);
     endDate.setHours(0, 0, 0, 0);
@@ -117,7 +117,7 @@ const hasWinningTicket = (tickets) => {
       <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl overflow-hidden mb-8">
         <div class="relative p-8">
           <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white rounded-full opacity-10"></div>
-          
+
           <div class="flex justify-between items-start relative z-10">
             <div class="text-white">
               <h1 class="text-4xl font-extrabold tracking-tight mb-2">{{ raffle.title }}</h1>
@@ -148,15 +148,15 @@ const hasWinningTicket = (tickets) => {
       <div class="bg-white rounded-2xl shadow-xl p-8 mb-6">
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-2xl font-bold text-gray-800">Escoge tus números</h2>
-          <button 
+          <button
               v-if="selectedNumbers.length"
               @click="clearSelection"
               class="group flex items-center px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-all duration-200 shadow-sm hover:shadow"
           >
-              <svg xmlns="http://www.w3.org/2000/svg" 
-                   class="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform duration-200" 
-                   fill="none" 
-                   viewBox="0 0 24 24" 
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform duration-200"
+                   fill="none"
+                   viewBox="0 0 24 24"
                    stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
@@ -201,7 +201,7 @@ const hasWinningTicket = (tickets) => {
           <div>
             <h3 class="text-xl font-bold text-gray-900">Tus números seleccionados</h3>
             <div class="flex flex-wrap gap-2 mt-3">
-              <span v-for="number in selectedNumbers" 
+              <span v-for="number in selectedNumbers"
                     :key="number"
                     class="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-lg font-medium">
                 {{ number }}
@@ -232,18 +232,18 @@ const hasWinningTicket = (tickets) => {
             <span v-else>
                 Selecciona al menos un boleto
             </span>
-            <svg 
+            <svg
                 v-if="selectedNumbers.length"
-                xmlns="http://www.w3.org/2000/svg" 
-                class="h-6 w-6 ml-2" 
-                fill="none" 
-                viewBox="0 0 24 24" 
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6 ml-2"
+                fill="none"
+                viewBox="0 0 24 24"
                 stroke="currentColor"
             >
-                <path 
-                    stroke-linecap="round" 
-                    stroke-linejoin="round" 
-                    stroke-width="2" 
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                 />
             </svg>
@@ -262,8 +262,8 @@ const hasWinningTicket = (tickets) => {
                     ¿Estás seguro de comprar los siguientes números?
                 </p>
                 <div class="flex flex-wrap gap-2">
-                    <span 
-                        v-for="number in selectedNumbers" 
+                    <span
+                        v-for="number in selectedNumbers"
                         :key="number"
                         class="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-lg font-medium"
                     >
@@ -275,13 +275,13 @@ const hasWinningTicket = (tickets) => {
                 </p>
             </div>
             <div class="mt-6 flex justify-end space-x-3">
-                <button 
+                <button
                     @click="showConfirmModal = false"
                     class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
                 >
                     Cancelar
                 </button>
-                <button 
+                <button
                     @click="buyTickets"
                     class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
                 >
