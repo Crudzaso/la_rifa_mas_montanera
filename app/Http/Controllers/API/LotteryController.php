@@ -3,53 +3,20 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\LotteryResult;
-use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\Lotteries\ProcessLotteryResults;
 
 class LotteryController extends Controller
 {
-    public function getResults()
+    public function getResults(ProcessLotteryResults $action)
     {
-        $url = 'https://api-resultadosloterias.com/api/results';
-
-        $response = Http::withOptions([
-            'verify' => false, // Eliminar para producción
-        ])->get($url);
-
-        if ($response->successful()) {
-            $lotteryResults = $response->json()['data'];
-
-            if (empty($lotteryResults)) {
-                return response()->json([
-                    'data' => [],
-                    'message' => 'No hay resultados disponibles en este momento.',
-                ], 404);
-            }
-
-            $antioqueñitaTarde = collect($lotteryResults)->firstWhere('lottery', 'ANTIOQUEÑITA TARDE');
-
-            if ($antioqueñitaTarde) {
-
-                LotteryResult::updateOrCreate(
-                    [
-                        'slug' => $antioqueñitaTarde['slug'],
-                        'date' => $antioqueñitaTarde['date'],
-                    ],
-                    [
-                        'lottery' => $antioqueñitaTarde['lottery'],
-                        'result' => $antioqueñitaTarde['result'],
-                        'series' => $antioqueñitaTarde['series'],
-                    ]
-                );
-            }
-
-            return response()->json(['data' => $lotteryResults]);
-
-        } else {
+        try {
+            $result = $action->execute();
+            return response()->json($result);
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error al obtener resultados de las loterías',
-                'error_code' => $response->status(),
+                'message' => $e->getMessage(),
+                'error_code' => $e->getCode(),
             ], 500);
         }
     }

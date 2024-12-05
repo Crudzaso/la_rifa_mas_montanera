@@ -1,5 +1,4 @@
 <?php
-// app/Console/Kernel.php
 
 namespace App\Console;
 
@@ -14,5 +13,10 @@ class Kernel extends ConsoleKernel
                 ->daily()
                 ->at('00:01')
                 ->appendOutputTo(storage_path('logs/raffles-status.log'));
+
+        $schedule->command('lottery:check-winners')
+                ->dailyAt('16:07')
+                ->timezone('America/Bogota');
+                
     }
 }
