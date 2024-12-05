@@ -18,7 +18,9 @@ class GoogleUser extends Model
     protected $fillable = [
         'name',
         'email',
-        'user_id', // Relación con el modelo User
+        'user_id', 
+        'avatar',
+        'google_id',
     ];
 
     /**

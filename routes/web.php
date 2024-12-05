@@ -30,19 +30,22 @@ Route::middleware([
 
 
 
-/* Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
-Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']); */
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
+
 
 /* Route::get('/auth/google', [GoogleController::class, 'login'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback'); */
 
-Route::get('/auth/google', function () {
+/* Route::get('/auth/google', function () {
     return Socialite::driver('google')->redirect();
 })->name('auth.google');
  
 Route::get('/auth/google/callback', function () {
-    $user = Socialite::driver('google')->stateless()->user();
-    
+    $user_google = Socialite::driver('google')->stateless()->user();
+
+
     return redirect('/dashboard');
 
 });  
+ */

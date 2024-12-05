@@ -33,8 +33,8 @@ class User extends Authenticatable
         'phone',
         'address',
         'avatar',
-        'external_id',
-        'external_auth'
+        'google_id',
+
     ];
 
     /**

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('google_users', function (Blueprint $table) {
+        Schema::create('github_users', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable(); 
             $table->string('email')->unique()->nullable(); 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('google_users');
+        Schema::dropIfExists('github_users');
     }
 };

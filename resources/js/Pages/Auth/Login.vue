@@ -102,5 +102,21 @@ const redirectToGoogle = () => {
                 Sign in with Google
             </button>
         </div>
+        <!-- Botón para autenticación con Github -->
+        <div class="mt-6">
+            <button 
+                @click="redirectToGoogle" 
+                class="w-full px-4 py-2 text-sm font-medium text-white bg-black hover:bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
+                Sign in with Github
+            </button>
+        </div>
+        <!-- Botón para autenticación con Discord -->
+        <div class="mt-6">
+            <button 
+                @click="redirectToGoogle" 
+                class="w-full px-4 py-2 text-sm font-medium text-white bg-[#5865F2] hover:bg-[#4752C4] rounded-md focus:outline-none">
+                Sign in with Discord
+            </button>
+        </div>
     </AuthenticationCard>
 </template>

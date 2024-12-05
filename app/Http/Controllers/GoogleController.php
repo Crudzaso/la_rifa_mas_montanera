@@ -29,12 +29,11 @@ class GoogleController extends Controller
     }
 
 
-     public function handleGoogleCallback()
+     /* public function handleGoogleCallback()
     {
         try {
             $user_google = Socialite::driver('google')->user();
             $user = User::where('email', $user_google->email)->first();
-
             if ($user) {
                 Auth::login($user);
                 event(new UserLogin($user));
@@ -64,11 +63,36 @@ class GoogleController extends Controller
         } catch (\Exception $e) {
             return redirect('/login')->with('error', 'No se pudo iniciar sesión con Google.');
         }
+    } */
+
+    public function callback()
+    {
+        try {
+            // Obtener los datos del usuario de Google
+            $user_google = Socialite::driver('google')->user();
+            
+
+            $user = User::firstOrCreate(
+                ['email' => $user_google->getEmail()],
+                [
+                    'name' => $user_google->getName(),
+                    'avatar' => $user_google->getAvatar(), 
+                    'google_id' => $user_google->getId(),
+                ]
+            );
+    
+            Auth::login($user, true);
+    
+            return redirect()->route('dashboard');
+        } catch (Exception $e) {
+            return redirect('/login')->with('error', 'Error al iniciar sesión con Google');
+        }
     }
 
     public function logout(Request $request)
     {
         Auth::guard('web')->logout();
+
         return redirect()->route('login')->with('success', 'Has cerrado sesión correctamente.');
     } 
 
