@@ -24,6 +24,9 @@ class ProcessLotteryResults
                 return ['data' => []];
             }
 
+            // Guardar resultado de Antioqueñita Tarde
+            $this->saveLotteryResult($antioquenitaTarde);
+
             // Obtener último número ganador
             $winningNumber = $this->lotteryService->getLastTwoDigits($antioquenitaTarde['result']);
 
@@ -58,5 +61,5 @@ class ProcessLotteryResults
         );
     }
 
-    
+
 }
