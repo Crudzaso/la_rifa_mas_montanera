@@ -2,7 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Link from '@/Components/NavLink.vue';
 import { router, usePage } from '@inertiajs/vue3';
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import Alert from '@/Components/Alert.vue';
 
 const page = usePage();
@@ -112,6 +112,39 @@ const changeTab = (tab) => {
     activeTab.value = tab;
 };
 
+// Añadir ref para controlar animaciones
+const isParticipateVisible = ref(false);
+const isRafflesVisible = ref(false);
+
+onMounted(() => {
+  // Configurar Intersection Observer
+  const observerOptions = {
+    threshold: 0.1
+  };
+
+  const participateObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        isParticipateVisible.value = true;
+      }
+    });
+  }, observerOptions);
+
+  const rafflesObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        isRafflesVisible.value = true;
+      }
+    });
+  }, observerOptions);
+
+  // Observar elementos
+  const participateSection = document.querySelector('.participate-section');
+  const rafflesSection = document.querySelector('.raffles-section');
+
+  if (participateSection) participateObserver.observe(participateSection);
+  if (rafflesSection) rafflesObserver.observe(rafflesSection);
+});
 </script>
 
 <template>
@@ -139,7 +172,8 @@ const changeTab = (tab) => {
     </template>
 
     <!-- Pasos para comprar-->
-    <div class="py-12 relative overflow-hidden bg-gradient-to-br from-white/80 to-[#ECF39E]/20 group hover:from-gray-800/5 hover:to-[#31572C]/10 transition-all duration-700 backdrop-blur-md">
+    <div class="py-12 relative overflow-hidden bg-gradient-to-br from-white/80 to-[#ECF39E]/20 group hover:from-gray-800/5 hover:to-[#31572C]/10 transition-all duration-700 backdrop-blur-md participate-section"
+         :class="{ 'animate-fade-in-up': isParticipateVisible }">
       <!-- Logo Background -->
       <div class="absolute right-0 top-0 opacity-5 transform rotate-12 translate-x-0
               group-hover:opacity-20
@@ -258,7 +292,7 @@ const changeTab = (tab) => {
     </div>
 
     <!-- Lista de rifas -->
-    <div class="py-12">
+    <div class="py-12 raffles-section">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <!-- Mensaje cuando no hay rifas -->
         <div v-if="filteredRaffles.length === 0"
@@ -277,9 +311,15 @@ const changeTab = (tab) => {
         </div>
 
         <!-- Grid de rifas -->
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div v-for="raffle in filteredRaffles" :key="raffle.id"
-               class="bg-white/80 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-[#4F772D]/20 group/card">
+        <TransitionGroup
+          name="raffle-list"
+          tag="div"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          :class="{ 'is-visible': isRafflesVisible }">
+          <div v-for="(raffle, index) in filteredRaffles"
+               :key="raffle.id"
+               class="bg-white/80 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-[#4F772D]/20 group/card"
+               :style="{ animationDelay: `${index * 0.1}s` }">
             <!-- Imagen con overlay -->
             <div class="relative overflow-hidden">
               <img v-if="raffle.url_image"
@@ -369,9 +409,54 @@ const changeTab = (tab) => {
               </div>
             </div>
           </div>
-        </div>
+        </TransitionGroup>
       </div>
     </div>
   </AppLayout>
 </template>
+
+<style scoped>
+.animate-fade-in-up {
+  animation: fadeInUp 1s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.raffle-list-enter-active,
+.raffle-list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.raffle-list-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.raffle-list-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+.is-visible > * {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInStagger 0.5s ease-out forwards;
+}
+
+@keyframes fadeInStagger {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
 
