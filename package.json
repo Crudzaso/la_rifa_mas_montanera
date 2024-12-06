@@ -20,7 +20,12 @@
         "vue": "^3.3.13"
     },
     "dependencies": {
+        "@inertiajs/inertia-vue3": "^0.6.0",
         "@vitejs/plugin-vue": "^5.2.1",
+        "canvas-confetti": "^1.9.3",
+        "dayjs": "^1.11.13",
+        "gsap": "^3.12.5",
+        "sweetalert2": "^11.14.5",
         "vue": "^3.5.13",
         "vue-router": "^4.5.0"
     }
