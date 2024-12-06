@@ -48,7 +48,7 @@ const submit = () => {
 
 const currentStep = ref(0);
 const steps = ['Información básica', 'Premio y Precio', 'Fechas'];
-const prices = [2000, 5000, 10000, 20000, 50000];
+const prices = ['2000', '5000', '10000', '20000', '50000'];
 
 const scrollToError = () => {
   const firstError = document.querySelector('.text-red-500');
@@ -129,9 +129,7 @@ const nextStep = () => {
 
           <!-- Formulario con pasos -->
           <form @submit.prevent="submit" class="p-8">
-            <TransitionGroup
-              name="slide-fade"
-              mode="out-in">
+            <TransitionGroup name="slide-fade">
               <!-- Paso 1: Información básica -->
               <div v-show="currentStep === 0"
                    :key="0"
@@ -210,7 +208,7 @@ const nextStep = () => {
                     >
                       <option value="" disabled>Seleccione un precio</option>
                       <option v-for="price in prices" :key="price" :value="price">
-                        ${{ price.toLocaleString() }}
+                        ${{ parseInt(price).toLocaleString() }}
                       </option>
                     </select>
                     <InputError class="mt-2" :message="form.errors.price_tickets"/>
@@ -314,28 +312,24 @@ const nextStep = () => {
   }
 }
 
-.slide-fade-enter-active {
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
+.slide-fade-enter-active,
 .slide-fade-leave-active {
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  position: absolute;
+  transition: all 0.5s ease;
+  position: relative;
 }
 
 .slide-fade-enter-from {
   opacity: 0;
-  transform: translateX(100px);
+  transform: translateX(30px);
 }
 
 .slide-fade-leave-to {
   opacity: 0;
-  transform: translateX(-100px);
+  transform: translateX(-30px);
 }
 
-.slide-fade-enter-to,
-.slide-fade-leave-from {
-  opacity: 1;
-  transform: translateX(0);
+.slide-fade-move {
+  transition: transform 0.5s ease;
 }
 </style>
+
