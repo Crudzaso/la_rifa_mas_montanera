@@ -43,7 +43,7 @@ Route::middleware([
         return Inertia::render('Lottery');
     })->name('lottery');
 
-    Route::prefix('usuarios')->group(function(){
+    Route::prefix('usuarios')->middleware('role:admin')->group(function(){
         Route::get('/',[UserController::class,'index'])->name('users.index');
         Route::get('/crear',[UserController::class,'create'])->name('users.create');
         Route::post('/',[UserController::class,'store'])->name('users.store');
@@ -55,10 +55,13 @@ Route::middleware([
 
     Route::prefix('rifas')->group(function(){
         Route::get('/',[RaffleController::class,'index'])->name('raffles.index');
-        Route::get('/crear',[RaffleController::class,'create'])->name('raffles.create');
-        Route::post('/',[RaffleController::class,'store'])->name('raffles.store');
-        Route::get('/{raffle}/editar',[RaffleController::class,'edit'])->name('raffles.edit');
-        Route::put('/{raffle}',[RaffleController::class,'update'])->name('raffles.update');
+
+        // Rutas protegidas para admin y organizador
+        Route::middleware('role:admin|organizador')->group(function() {
+            Route::get('/crear',[RaffleController::class,'create'])->name('raffles.create');
+            Route::get('/{raffle}/editar',[RaffleController::class,'edit'])->name('raffles.edit');
+        });
+
         Route::delete('/{raffle}',[RaffleController::class,'destroy'])->name('raffles.destroy');
     });
 

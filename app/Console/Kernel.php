@@ -9,10 +9,12 @@ class Kernel extends ConsoleKernel
 {
     protected function schedule(Schedule $schedule)
     {
-        // Verificar resultados de lotería a las 4:07 PM
-        $schedule->command('lottery:check-winners')->dailyAt('16:07');
+        // Verificar resultados de lotería diariamente
+        $schedule->command('lottery:check-winners')
+                    ->between('16:00', '16:09')
+                    ->dailyAt('16:07');
 
-        // Actualizar estados de rifas a las 4:10 PM (después de verificar ganadores)
+        // Actualizar estados de rifas (después de verificar ganadores)
         $schedule->command('raffles:update-status')->dailyAt('16:10');
     }
 }
