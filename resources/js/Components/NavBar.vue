@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3"; 
 import Logo from "@/Components/LogoNavBar.vue";
 import NavLink from "@/Components/NavLink.vue";
 import Dropdown from "@/Components/Dropdown.vue";
@@ -48,6 +48,11 @@ const getInitials = (fullName) => {
     return (names[0][0] + names[names.length - 1][0]).toUpperCase();
   }
   return names[0][0].toUpperCase();
+};
+
+// Función para logout
+const logout = () => {
+  router.post(route('logout'));
 };
 </script>
 
@@ -125,7 +130,7 @@ const getInitials = (fullName) => {
                 <DropdownLink :href="route('profile.show')">
                   Perfil
                 </DropdownLink>
-                <form @submit.prevent="$root.submit('post', route('logout'))">
+                <form @submit.prevent="logout">
                   <DropdownLink as="button">
                     Cerrar Sesión
                   </DropdownLink>
