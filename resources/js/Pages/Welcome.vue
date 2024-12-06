@@ -5,6 +5,7 @@ import Carousel from '@/Components/Carousel.vue';
 import backgroundImage from '@/assets/images/background.png';
 import Footer from '@/Components/Footer.vue';
 import CarouselRaffles from '@/Components/CarouselRaffles.vue';
+import CarouselTeam from '@/Components/CarouselTeam.vue';
 
 defineProps({
   canLogin: {
@@ -212,73 +213,13 @@ function handleImageError() {
       </div>
     </div>
 
-    <!-- Cards con bordes verdes -->
-    <div class="rounded-2xl border-2 border-[#4F772D]/20 bg-white">
-      <div class="py-12 sm:py-16 lg:py-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 class="text-4xl font-serif text-center mb-16 text-emerald-900">
-            Nuestro Equipo
-          </h2>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12">
-            <!-- Creador 1 -->
-            <div class="group">
-              <div
-                class="relative overflow-hidden rounded-2xl shadow-xl transition-all duration-500 transform hover:scale-105"
-              >
-                <img
-                  src="/path/to/creator1.jpg"
-                  alt="Davi"
-                  class="w-full h-96 object-cover"
-                />
-                <div
-                  class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-emerald-900 p-6"
-                >
-                  <h3 class="text-2xl font-serif text-white mb-2">Davi</h3>
-                  <p class="text-emerald-100">Desarrollador Full Stack</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Creador 2 -->
-            <div class="group">
-              <div
-                class="relative overflow-hidden rounded-2xl shadow-xl transition-all duration-500 transform hover:scale-105"
-              >
-                <img
-                  src="/path/to/creator2.jpg"
-                  alt="Sebastian"
-                  class="w-full h-96 object-cover"
-                />
-                <div
-                  class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-emerald-900 p-6"
-                >
-                  <h3 class="text-2xl font-serif text-white mb-2">Sebastian</h3>
-                  <p class="text-emerald-100">Diseñador UX/UI</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Creador 3 -->
-            <div class="group">
-              <div
-                class="relative overflow-hidden rounded-2xl shadow-xl transition-all duration-500 transform hover:scale-105"
-              >
-                <img
-                  src="/path/to/creator3.jpg"
-                  alt="Nicolas"
-                  class="w-full h-96 object-cover"
-                />
-                <div
-                  class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-emerald-900 p-6"
-                >
-                  <h3 class="text-2xl font-serif text-white mb-2">Nicolas</h3>
-                  <p class="text-emerald-100">Desarrollador Backend</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <!-- Sección de Equipo -->
+    <div class="py-12 sm:py-16 lg:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-4xl font-serif text-center mb-16 text-[#31572C]">
+          Nuestro Equipo
+        </h2>
+        <CarouselTeam />
       </div>
     </div>
 
