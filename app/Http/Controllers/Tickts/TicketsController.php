@@ -55,6 +55,10 @@ class TicketsController extends Controller
                 ->where('raffle_id', $raffle->id)
                 ->count();
 
+                //Se puede usar para calcular el total de la compra y pasarlo a mercado pago
+
+            //$totalAmount = count($validated['ticket_numbers']) * $raffle->price_tickets; 
+
             foreach ($validated['ticket_numbers'] as $number) {
                 Tickets::create([
                     'user_id' => Auth::id(),
