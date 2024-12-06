@@ -41,12 +41,13 @@ class HandleInertiaRequests extends Middleware
                     'id' => $request->user()->id,
                     'name' => $request->user()->name,
                     'email' => $request->user()->email,
+                    // Añadir roles y permisos
                     'roles' => $request->user()->roles->map(function($role) {
                         return [
-                            'id' => $role->id,
-                            'name' => $role->name
+                            'name' => $role->name,
+                            'permissions' => $role->permissions->pluck('name')
                         ];
-                    }),
+                    })
                 ] : null,
             ],
         ]);

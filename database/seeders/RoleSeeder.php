@@ -24,7 +24,9 @@ class RoleSeeder extends Seeder
         // Permisos para rifas
         Permission::create(['name' => 'raffles.index']);
         Permission::create(['name' => 'raffles.create']);
+        Permission::create(['name' => 'raffles.store']); 
         Permission::create(['name' => 'raffles.edit']);
+        Permission::create(['name' => 'raffles.update']); 
         Permission::create(['name' => 'raffles.delete']);
 
         // Permisos para boletos
@@ -36,13 +38,14 @@ class RoleSeeder extends Seeder
         // Asignar permisos al admin
         $admin->givePermissionTo([
             'users.index', 'users.create', 'users.edit', 'users.delete',
-            'raffles.index', 'raffles.create', 'raffles.edit', 'raffles.delete',
+            'raffles.index', 'raffles.create', 'raffles.store', 'raffles.edit', 'raffles.update', 'raffles.delete',
             'tickets.index', 'tickets.create', 'tickets.show', 'tickets.buy'
         ]);
 
         // Asignar permisos al organizador
         $organizador->givePermissionTo([
-            'raffles.index', 'raffles.create', 'raffles.edit', 'raffles.delete'
+            'raffles.index', 'raffles.create', 'raffles.store', 'raffles.edit', 
+            'raffles.update'
         ]);
 
         // Asignar permisos al cliente

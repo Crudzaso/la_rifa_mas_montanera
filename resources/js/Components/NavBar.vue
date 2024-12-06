@@ -1,20 +1,13 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, inject } from "vue";
 import { Link, router, usePage } from "@inertiajs/vue3";
 import Logo from "@/Components/LogoNavBar.vue";
 import NavLink from "@/Components/NavLink.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 
-const userRoles = computed(() => {
-  return usePage().props.auth?.user?.roles || [];
-});
-
-// Modificar hasRole para aceptar string o array
-const hasRole = (roles) => {
-  const roleArray = Array.isArray(roles) ? roles : [roles];
-  return userRoles.value.some(r => roleArray.includes(r.name));
-};
+// Inyectar función hasRole desde AppLayout
+const hasRole = inject('hasRole');
 
 const navLinks = computed(() => {
   const links = [

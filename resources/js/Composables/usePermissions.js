@@ -5,8 +5,12 @@ export function usePermissions() {
         const userRoles = usePage().props.auth?.user?.roles;
         if (!userRoles) return false;
         
+        
         const roleArray = Array.isArray(roles) ? roles : [roles];
-        return userRoles.some(role => roleArray.includes(role.name));
+        
+
+        const userRoleNames = userRoles.map(role => role.name);
+        return roleArray.some(role => userRoleNames.includes(role));
     };
 
     const hasPermission = (permissions) => {
@@ -14,8 +18,13 @@ export function usePermissions() {
         if (!userRoles) return false;
         
         const permissionArray = Array.isArray(permissions) ? permissions : [permissions];
-        const userPermissions = userRoles.flatMap(role => role.permissions || []);
-        return userPermissions.some(p => permissionArray.includes(p.name));
+        
+        // Verificar en todos los roles si existe el permiso
+        return userRoles.some(role => {
+            return permissionArray.some(permission => 
+                role.permissions.includes(permission)
+            );
+        });
     };
 
     return { hasRole, hasPermission };

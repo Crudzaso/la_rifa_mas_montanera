@@ -1,13 +1,34 @@
 <script setup>
-import { ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { ref, provide, computed } from 'vue'; 
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import Banner from '@/Components/Banner.vue';
 import NavBar from '@/Components/NavBar.vue';
 import Footer from '@/Components/Footer.vue';
+import { usePermissions } from '@/Composables/usePermissions';
 
 defineProps({
     title: String,
 });
+
+const { hasRole, hasPermission } = usePermissions();
+const page = usePage();
+
+// Agregar computed para ver permisos
+const userPermissions = computed(() => {
+    const user = page.props.auth?.user;
+    if (!user || !user.roles) return [];
+    
+    // Obtener todos los permisos de todos los roles
+    return user.roles.flatMap(role => role.permissions || []);
+});
+
+//console.log('Roles del usuario:', page.props.auth?.user?.roles);
+//console.log('Permisos del usuario:', userPermissions.value);
+
+// Proveer permisos a componentes hijos
+provide('userPermissions', userPermissions);
+provide('hasRole', hasRole);
+provide('hasPermission', hasPermission);
 
 const showingNavigationDropdown = ref(false);
 
@@ -21,7 +42,10 @@ const logout = () => {
         <Head :title="title" />
         <Banner />
         <div class="flex-grow">
-            <NavBar :auth="$page.props.auth" />
+            <NavBar 
+                :auth="$page.props.auth" 
+                :user-permissions="userPermissions"
+            />
 
             <!-- Page Heading -->
             <header v-if="$slots.header" class="bg-gradient-to-r from-[#90A955]/40 to-[#edf593]/80 backdrop-blur-sm shadow-md border-b border-[#4F772D]/20">
