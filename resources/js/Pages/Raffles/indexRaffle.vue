@@ -171,8 +171,8 @@ onMounted(() => {
       </div>
     </template>
 
-    <!-- Pasos para comprar-->
-    <div class="py-12 relative overflow-hidden bg-gradient-to-br from-white/80 to-[#ECF39E]/20 group hover:from-gray-800/5 hover:to-[#31572C]/10 transition-all duration-700 backdrop-blur-md participate-section"
+    <!-- Pasos para comprar -->
+    <div class="w-full py-8 relative overflow-hidden bg-gradient-to-br from-white/80 to-[#ECF39E]/20 group hover:from-gray-800/5 hover:to-[#31572C]/10 transition-all duration-700 backdrop-blur-md participate-section"
          :class="{ 'animate-fade-in-up': isParticipateVisible }">
       <!-- Logo Background -->
       <div class="absolute right-0 top-0 opacity-5 transform rotate-12 translate-x-0
@@ -185,11 +185,12 @@ onMounted(() => {
       </div>
 
       <!-- Overlay -->
-      <div class="absolute inset-0 bg-gradient-to-br from-transparent to-transparent
+      <div class="absolute inset-0 w-full bg-gradient-to-br from-transparent to-transparent
               group-hover:from-gray-900/10
               group-hover:to-transparent
               transition-all duration-700"></div>
 
+      <!-- Contenido -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <h2 class="text-4xl font-serif text-center mb-16 text-[#31572C] transform transition-all duration-500 group-hover:scale-105 group-hover:text-[#4F772D]">
           ¿Cómo Participar?
@@ -311,27 +312,25 @@ onMounted(() => {
         </div>
 
         <!-- Grid de rifas -->
-        <TransitionGroup
-          name="raffle-list"
-          tag="div"
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          :class="{ 'is-visible': isRafflesVisible }">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 raffles-section"
+             :class="{ 'is-visible': isRafflesVisible }">
           <div v-for="(raffle, index) in filteredRaffles"
                :key="raffle.id"
-               class="bg-white/80 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-[#4F772D]/20 group/card"
-               :style="{ animationDelay: `${index * 0.1}s` }">
+               class="bg-white/80 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden border border-[#4F772D]/20 transition-transform duration-300 ease-out hover:-translate-y-4 hover:shadow-2xl group"
+               :style="{ '--index': index }"
+          >
             <!-- Imagen con overlay -->
             <div class="relative overflow-hidden">
               <img v-if="raffle.url_image"
                    :src="raffle.url_image"
                    :alt="raffle.title"
-                   class="w-full h-48 object-cover transform transition-transform duration-500 group-hover/card:scale-110"/>
+                   class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"/>
               <div v-else class="w-full h-48 bg-gradient-to-br from-[#4F772D]/10 to-[#90A955]/30 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-[#4F772D]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                 </svg>
               </div>
-              <!-- Estado con nuevo estilo -->
+              <!-- Estado-->
               <span :class="[
                 getStatusColor(raffle.status),
                 'absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold shadow-md backdrop-blur-sm'
@@ -346,7 +345,7 @@ onMounted(() => {
                 {{ raffle.title }}
               </h3>
 
-              <!-- Premio con nuevo estilo -->
+              <!-- Premio-->
               <div class="bg-gradient-to-br from-[#4F772D]/10 to-[#90A955]/30 p-4 rounded-xl transition-all duration-300 group-hover/card:from-[#4F772D]/20 group-hover/card:to-[#90A955]/40">
                 <div class="flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#4F772D] mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -409,15 +408,16 @@ onMounted(() => {
               </div>
             </div>
           </div>
-        </TransitionGroup>
+        </div>
       </div>
     </div>
   </AppLayout>
 </template>
 
 <style scoped>
+
 .animate-fade-in-up {
-  animation: fadeInUp 1s ease-out forwards;
+  animation: fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 @keyframes fadeInUp {
@@ -431,9 +431,20 @@ onMounted(() => {
   }
 }
 
-.raffle-list-enter-active,
-.raffle-list-leave-active {
-  transition: all 0.5s ease;
+.is-visible > * {
+  animation: fadeIn 0.5s ease forwards;
+  animation-delay: calc(var(--index) * 0.1s);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .raffle-list-enter-from {
@@ -446,13 +457,15 @@ onMounted(() => {
   transform: translateY(-30px);
 }
 
-.is-visible > * {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInStagger 0.5s ease-out forwards;
+.raffle-list-move {
+  transition: all 0.5s ease;
 }
 
-@keyframes fadeInStagger {
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
   to {
     opacity: 1;
     transform: translateY(0);

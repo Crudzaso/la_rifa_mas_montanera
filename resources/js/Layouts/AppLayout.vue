@@ -31,7 +31,7 @@ const logout = () => {
             </header>
 
             <!-- Page Content -->
-            <main class="min-h-screen">
+            <main class="min-h-screen px-2 sm:px-4 md:px-0">
                 <slot />
             </main>
         </div>

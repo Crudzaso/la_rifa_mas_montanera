@@ -192,4 +192,80 @@ const getInitials = (fullName) => {
     100% 100%
   );
 }
+
+@media (max-width: 425px) {
+  .max-w-7xl {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  header {
+    padding: 0.75rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .flex-col {
+    padding: 0.5rem;
+  }
+
+
+  .text-2xl {
+    font-size: 1.25rem;
+  }
+
+  .text-xl {
+    font-size: 1.125rem;
+  }
+
+  .p-6 {
+    padding: 1rem;
+  }
+
+  .gap-8 {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .max-w-7xl {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .p-4 {
+    padding: 0.75rem;
+  }
+
+  .px-6 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .max-w-7xl {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .p-4 {
+    padding: 0.5rem;
+  }
+
+  .text-sm {
+    font-size: 0.75rem;
+  }
+
+  .h-4 {
+    height: 0.875rem;
+  }
+
+  .w-4 {
+    width: 0.875rem;
+  }
+}
 </style>
