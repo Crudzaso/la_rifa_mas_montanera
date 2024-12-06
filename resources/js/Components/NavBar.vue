@@ -1,39 +1,56 @@
 <script setup>
-import { ref } from "vue";
-import { Link, router } from "@inertiajs/vue3"; 
+import { ref, computed } from "vue";
+import { Link, router, usePage } from "@inertiajs/vue3";
 import Logo from "@/Components/LogoNavBar.vue";
 import NavLink from "@/Components/NavLink.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 
-const navLinks = [
-  {
-    name: "Rifas",
-    route: "raffles.index",
-    submenu: [
-      { name: "Ver Rifas", route: "raffles.index" },
-      { name: "Crear Rifa", route: "raffles.create" },
-    ],
-  },
+const userRoles = computed(() => {
+  return usePage().props.auth?.user?.roles || [];
+});
 
-  {
-    name: "Resultado loterias",
-    route: "lottery",
-  },
-  {
-    name: "Boletos",
-    route: "tickets.index",
-  },
-  {
-    name: "Usuarios",
-    route: "users.index",
-    submenu: [
-      { name: "Ver Usuarios", route: "users.index" },
-      { name: "Crear Usuario", route: "users.create" },
-    ],
-  },
+// Modificar hasRole para aceptar string o array
+const hasRole = (roles) => {
+  const roleArray = Array.isArray(roles) ? roles : [roles];
+  return userRoles.value.some(r => roleArray.includes(r.name));
+};
 
-];
+const navLinks = computed(() => {
+  const links = [
+    {
+      name: "Rifas",
+      route: "raffles.index",
+      // Submenu solo para admin y organizador
+      submenu: hasRole(['admin', 'organizador']) ? [
+        { name: "Ver Rifas", route: "raffles.index" },
+        { name: "Crear Rifa", route: "raffles.create" },
+      ] : null,
+    },
+    {
+      name: "Resultado loterias",
+      route: "lottery",
+    },
+    {
+      name: "Boletos",
+      route: "tickets.index",
+    }
+  ];
+
+  // Solo agregar el menú de usuarios si es admin
+  if (hasRole('admin')) {
+    links.push({
+      name: "Usuarios",
+      route: "users.index",
+      submenu: [
+        { name: "Ver Usuarios", route: "users.index" },
+        { name: "Crear Usuario", route: "users.create" },
+      ],
+    });
+  }
+
+  return links;
+});
 
 defineProps({
   auth: {
