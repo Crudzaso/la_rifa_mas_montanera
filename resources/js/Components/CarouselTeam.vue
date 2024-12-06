@@ -28,7 +28,7 @@ const team = [
 ];
 
 // Calcular el número total de slides
-const totalSlides = computed(() => Math.ceil(team.length / 2));
+const totalSlides = computed(() => Math.ceil(team.length / 1.6));
 
 const nextSlide = () => {
   currentSlide.value = (currentSlide.value + 1) % totalSlides.value;
@@ -42,7 +42,7 @@ const prevSlide = () => {
 const indicators = computed(() => Array.from({ length: totalSlides.value }));
 
 onMounted(() => {
-  slideInterval.value = setInterval(nextSlide, 5000);
+  slideInterval.value = setInterval(nextSlide, 4000);
 });
 </script>
 
