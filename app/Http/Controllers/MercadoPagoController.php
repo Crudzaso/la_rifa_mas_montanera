@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Services\MercadoPagoService;
 use Illuminate\Http\Request;
+use App\Helpers\EmailHelperGlobal;
 
 class MercadoPagoController extends Controller
 {
     protected $mercadoPagoService;
+    protected $emailHelper;
 
-    public function __construct(MercadoPagoService $mercadoPagoService)
+    public function __construct(MercadoPagoService $mercadoPagoService, EmailHelperGlobal $emailHelper)
     {
         $this->mercadoPagoService = $mercadoPagoService;
+        $this->emailHelper = $emailHelper;
     }
 
     // Mostrar el formulario de pago
@@ -31,7 +34,7 @@ class MercadoPagoController extends Controller
                 "currency_id" => "COP",
                 "quantity" => 1,
                 "unit_price" => 1000.00
-            ]
+            ],
         ];
 
         $payer = [
@@ -43,13 +46,24 @@ class MercadoPagoController extends Controller
         $preference = $this->mercadoPagoService->createPaymentPreference($items, $payer);
 
         if (isset($preference->init_point)) {
+            $totalAmount = 0;
+            foreach ($items as $item) {
+                $totalAmount += $item['unit_price'] * $item['quantity'];
+            }
+
+            $user = (object) [
+                'names' => "{$payer['name']} {$payer['surname']}",
+                'email' => $payer['email'],
+            ];
+
+            $this->emailHelper::sendPaymentConfirmationEmail($user, $totalAmount);
+
             return redirect($preference->init_point);
         } else {
             return redirect()->route('mercadopago.payment')->with('error', 'No se pudo crear la preferencia de pago.');
         }
     }
 
-    // Página de éxito del pago
     public function success()
     {
         return redirect()->route('mercadopago.payment');
