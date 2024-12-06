@@ -8,6 +8,8 @@ use App\Http\Controllers\Raffles\RaffleController;
 use App\Http\Controllers\Tickts\TicketsController;
 use App\Models\Raffle;
 use App\Http\Controllers\API\LotteryController;
+use App\Http\Controllers\MercadoPagoController;
+
 
 // Ruta principal
 Route::get('/', function () {
@@ -25,7 +27,13 @@ Route::prefix('api')->group(function () {
     Route::get('loteria/resultados', [LotteryController::class, 'getResults']);
 });
 
+
 // Rutas protegidas
+Route::get('mercadopago/pagar', [MercadoPagoController::class, 'showPaymentForm'])->name('mercadopago.payment');
+Route::post('mercadopago/crear-pago', [MercadoPagoController::class, 'createPayment'])->name('mercadopago.createPayment');
+Route::get('mercadopago/success', [MercadoPagoController::class, 'success'])->name('mercadopago.success');
+Route::get('mercadopago/failure', [MercadoPagoController::class, 'failure'])->name('mercadopago.failed');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
