@@ -30,7 +30,7 @@ class MercadoPagoController extends Controller
                 "description" => "Descripción del producto 1",
                 "currency_id" => "COP",
                 "quantity" => 1,
-                "unit_price" => 100.00
+                "unit_price" => 1000.00
             ]
         ];
 
@@ -42,22 +42,23 @@ class MercadoPagoController extends Controller
 
         $preference = $this->mercadoPagoService->createPaymentPreference($items, $payer);
 
-        if ($preference) {
-            return redirect($preference->init_point); // Redirige a MercadoPago para el pago
+        if (isset($preference->init_point)) {
+            return redirect($preference->init_point);
         } else {
-            return redirect()->route('mercadopago.failure');
+            return redirect()->route('mercadopago.payment')->with('error', 'No se pudo crear la preferencia de pago.');
         }
     }
 
     // Página de éxito del pago
     public function success()
     {
-        return view('mercadopago.success');
+        return redirect()->route('mercadopago.payment');
     }
 
     // Página de fallo en el pago
     public function failure()
     {
-        return view('mercadopago.failure');
+        return redirect()->route('mercadopago.payment');
     }
 }
+

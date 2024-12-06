@@ -5,6 +5,7 @@ namespace App\Services;
 use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\Exceptions\MPApiException;
+use Illuminate\Support\Facades\Log;
 
 class MercadoPagoService
 {
@@ -22,6 +23,9 @@ class MercadoPagoService
 
     public function createPaymentPreference($items, $payer)
     {
+        
+        $client = new PreferenceClient();
+        
         $paymentMethods = [
             "excluded_payment_methods" => [],
             "installments" => 12,
@@ -44,13 +48,16 @@ class MercadoPagoService
             "auto_return" => 'approved',
         ];
 
-        $client = new PreferenceClient();
-
         try {
             $preference = $client->create($request);
             return $preference;
         } catch (MPApiException $error) {
-            return $error;
+            Log::error('MercadoPago Error: ' . $error->getMessage());
+            return response()->json([
+                'error' => 'Error al crear la preferencia de pago',
+                'details' => $error->getMessage()
+            ]);
         }
+        
     }
 }
