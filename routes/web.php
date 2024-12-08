@@ -74,6 +74,10 @@ Route::middleware([
 
 
     Route::get('/rifas/ver', [RaffleController::class, 'publicIndex'])->name('raffles.public');
+    //ruta PWA
+    Route::get('/offline',function(){
+        return view('vendor.laravelpwa.offline');
+    });
 
 });
 
