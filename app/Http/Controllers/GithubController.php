@@ -48,7 +48,7 @@ class GithubController extends Controller
     
             Auth::login($user, true);
     
-            return redirect()->route('dashboard')->with('user_name', $user->name);
+            return redirect()->route('raffles.index')->with('user_name', $user->name);
         } catch (Exception $e) {
             return redirect('/login')->with('error', 'Error al iniciar sesión con Github');
         }
