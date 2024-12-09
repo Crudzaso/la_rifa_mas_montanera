@@ -49,7 +49,7 @@ class GoogleController extends Controller
     
             Auth::login($user, true);
     
-            return redirect()->route('dashboard');
+            return redirect()->route('raffles.index');
         } catch (Exception $e) {
             return redirect('/login')->with('error', 'Error al iniciar sesión con Google');
         }
