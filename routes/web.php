@@ -2,6 +2,13 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\GithubController;
+use App\Http\Controllers\DiscordController;
+use App\Models\User;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Raffles\RaffleController;
@@ -76,4 +83,16 @@ Route::middleware([
     Route::get('/rifas/ver', [RaffleController::class, 'publicIndex'])->name('raffles.public');
 
 });
+
+
+
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
+
+Route::get('/auth/github', [GithubController::class, 'redirectToGithub'])->name('auth.github');
+Route::get('/auth/github/callback', [GithubController::class, 'callback']);
+
+Route::get('/auth/discord', [DiscordController::class, 'redirectToDiscord'])->name('auth.discord');
+Route::get('/auth/github/discord', [DiscordController::class, 'callback']);
+
 
