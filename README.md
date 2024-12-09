@@ -72,5 +72,5 @@ Licencia
 Este proyecto está bajo la Licencia MIT.
 
 Contacto
-Para más información, contacta a dev.eloy29@gmail.com 
+Para más información, contacta a daviocassio95@gmail.com 
 
