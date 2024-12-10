@@ -11,7 +11,6 @@ import TextInput from '@/Components/TextInput.vue';
 defineProps({
     canResetPassword: Boolean,
     status: String,
-    user_name: String,  // Recibe el nombre del usuario desde el backend
 });
 
 const form = useForm({
@@ -28,21 +27,6 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
-
-// Función para redirigir a Github OAuth
-const redirectToGithub = () => {
-    window.location.href = route('auth.github');
-};
-
-// Función para redirigir a Discord OAuth
-const redirectToDiscord = () => {
-    window.location.href = route('auth.discord');
-};
-
-// Función para redirigir a Google OAuth
-const redirectToGoogle = () => {
-    window.location.href = route('auth.google');
-};
 </script>
 
 <template>
@@ -53,9 +37,8 @@ const redirectToGoogle = () => {
             <AuthenticationCardLogo />
         </template>
 
-        <!-- Mostrar el nombre del usuario si está disponible -->
-        <div v-if="user_name" class="mb-4 font-medium text-sm text-green-600">
-            Bienvenido, {{ user_name }}!
+        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+            {{ status }}
         </div>
 
         <form @submit.prevent="submit">
@@ -103,32 +86,5 @@ const redirectToGoogle = () => {
                 </PrimaryButton>
             </div>
         </form>
-
-        <!-- Botón para autenticación con Google -->
-        <div class="mt-6">
-            <button 
-                @click="redirectToGoogle" 
-                class="w-full px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                Sign in with Google
-            </button>
-        </div>
-
-        <!-- Botón para autenticación con Github -->
-        <div class="mt-6">
-            <button 
-                @click="redirectToGithub" 
-                class="w-full px-4 py-2 text-sm font-medium text-white bg-black hover:bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
-                Sign in with Github
-            </button>
-        </div>
-
-        <!-- Botón para autenticación con Discord -->
-        <div class="mt-6">
-            <button 
-                @click="redirectToDiscord" 
-                class="w-full px-4 py-2 text-sm font-medium text-white bg-[#5865F2] hover:bg-[#4752C4] rounded-md focus:outline-none">
-                Sign in with Discord
-            </button>
-        </div>
     </AuthenticationCard>
 </template>
