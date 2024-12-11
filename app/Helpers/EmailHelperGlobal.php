@@ -5,11 +5,10 @@ namespace App\Helpers;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Mail\PasswordResetEmail;
-use App\Mail\RegistroExitoso; 
+use App\Mail\RegistroExitoso;
 
 class EmailHelperGlobal
 {
-    // Configuración predeterminada desde .env
     protected static function getEmailConfig()
     {
         return [
@@ -21,7 +20,6 @@ class EmailHelperGlobal
     protected static function sendEmailRequest($toEmail, $toName, $subject, $htmlContent)
     {
         try {
-            // Configuramos los datos del correo
             $data = [
                 'subject' => $subject,
                 'htmlContent' => $htmlContent,
@@ -29,16 +27,14 @@ class EmailHelperGlobal
                 'toName' => $toName,
             ];
 
-            // Enviar el correo utilizando el Mail de Laravel
             Mail::send([], [], function ($message) use ($data) {
                 $message->to($data['toEmail'], $data['toName'])
                         ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
                         ->subject($data['subject'])
-                        ->html($data['htmlContent']); // Usamos el método html() aquí
+                        ->html($data['htmlContent']);
             });
 
         } catch (\Exception $e) {
-            // Si ocurre un error, lo registramos en los logs
             Log::error('Error al enviar el correo:', [
                 'error' => $e->getMessage(),
                 'data' => $data
@@ -49,8 +45,8 @@ class EmailHelperGlobal
     // Generación del contenido del mensaje HTML
     public static function generateMessage($userName, $messageContent, $footer = null)
 {
-    $imageUrl = 'https://ibb.co/prY5RWQ';
-    
+    $imageUrl = 'https://i.postimg.cc/DwX5NCg5/La-Rifa-Monta-era-Photoroom.png';
+
     return "
         <div style='background-color: #f9fafc; padding: 20px; text-align: center;'>
             <div style='background-color: #ffffff; padding: 30px; border-radius: 8px; display: inline-block; text-align: left;'>
@@ -75,9 +71,9 @@ class EmailHelperGlobal
 
         $footer = 'Este es un mensaje automático, por favor no respondas.';
 
-        $htmlContent = self::generateMessage($user->names, $messageContent, $footer);
+        $htmlContent = self::generateMessage($user->name, $messageContent, $footer);
 
-        self::sendEmailRequest($user->email, $user->names, $subject, $htmlContent);
+        self::sendEmailRequest($user->email, $user->name, $subject, $htmlContent);
     }
 
     // Enviar notificación de inicio de sesión
@@ -89,16 +85,16 @@ class EmailHelperGlobal
 
         $footer = 'Si no reconoces este inicio de sesión, considera revisar tu actividad reciente.';
 
-        $htmlContent = self::generateMessage($user->names, $messageContent, $footer);
+        $htmlContent = self::generateMessage($user->name, $messageContent, $footer);
 
-        self::sendEmailRequest($user->email, $user->names, $subject, $htmlContent);
+        self::sendEmailRequest($user->email, $user->name, $subject, $htmlContent);
     }
 
     // Enviar correo de restablecimiento de contraseña
     public static function sendPasswordResetEmail($user, $resetLink)
     {
         $subject = 'Restablecimiento de Contraseña - La Rifa Mas Montañera';
-        
+
         $messageContent = 'Has recibido este mensaje porque se solicitó un restablecimiento de contraseña para tu cuenta en La Rifa Mas Montañera.';
 
         // Botón para restablecer la contraseña
@@ -106,9 +102,9 @@ class EmailHelperGlobal
 
         $footer = 'Este enlace de restablecimiento de contraseña expirará en 60 minutos. Si no has solicitado esta acción, simplemente ignora este mensaje.';
 
-        $htmlContent = self::generateMessage($user->names, $messageContent . $buttonHtml, $footer);
+        $htmlContent = self::generateMessage($user->name, $messageContent . $buttonHtml, $footer);
 
-        self::sendEmailRequest($user->email, $user->names, $subject, $htmlContent);
+        self::sendEmailRequest($user->email, $user->name, $subject, $htmlContent);
     }
 
     public static function sendPaymentConfirmationEmail($user, $paymentDetails)
@@ -116,7 +112,7 @@ class EmailHelperGlobal
         $subject = 'Confirmación de Pago - La Rifa Mas Montañera';
 
         $messageContent = "
-            Gracias por realizar tu compra en <strong>La Rifa Mas Montañera</strong>. 
+            Gracias por realizar tu compra en <strong>La Rifa Mas Montañera</strong>.
             Hemos recibido tu pago exitosamente. Aquí están los detalles de tu transacción:<br><br>
             <ul>
                 <li><strong>ID de Transacción:</strong> {$paymentDetails['transaction_id']}</li>
@@ -128,8 +124,8 @@ class EmailHelperGlobal
 
         $footer = 'Este es un mensaje automático, por favor no respondas.';
 
-        $htmlContent = self::generateMessage($user->names, $messageContent, $footer);
+        $htmlContent = self::generateMessage($user->name, $messageContent, $footer);
 
-        self::sendEmailRequest($user->email, $user->names, $subject, $htmlContent);
+        self::sendEmailRequest($user->email, $user->name, $subject, $htmlContent);
     }
 }
