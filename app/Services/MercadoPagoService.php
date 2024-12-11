@@ -5,6 +5,7 @@ namespace App\Services;
 use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\Exceptions\MPApiException;
+use App\Events\ErrorOccurred;
 use Illuminate\Support\Facades\Log;
 
 class MercadoPagoService
@@ -20,44 +21,48 @@ class MercadoPagoService
         MercadoPagoConfig::setAccessToken($mpAccessToken);
     }
 
-
     public function createPaymentPreference($items, $payer)
     {
-        
-        $client = new PreferenceClient();
-        
+        // Configurar los métodos de pago, por ejemplo, se pueden dejar habilitados todos los métodos disponibles
         $paymentMethods = [
             "excluded_payment_methods" => [],
-            "installments" => 12,
-            "default_installments" => 1
+            "installments" => 12,  // O puedes calcular las cuotas de forma dinámica
+            "default_installments" => 1,
         ];
 
+        // URL de retorno dinámicas
         $backUrls = [
             'success' => route('mercadopago.success'),
-            'failure' => route('mercadopago.failed')
+            'failure' => route('mercadopago.failure'),
         ];
 
+        // Construir la solicitud para MercadoPago
         $request = [
             "items" => $items,
             "payer" => $payer,
             "payment_methods" => $paymentMethods,
             "back_urls" => $backUrls,
-            "statement_descriptor" => "NAME_DISPLAYED_IN_USER_BILLING",
-            "external_reference" => "1234567890",
+            "statement_descriptor" => "NOMBRE_EN_FACTURA", // Puedes cambiar esto según tu necesidad
+            "external_reference" => uniqid(), // Un identificador único para la referencia externa
             "expires" => false,
             "auto_return" => 'approved',
         ];
 
+        $client = new PreferenceClient();
+
         try {
+            // Crear la preferencia de pago
             $preference = $client->create($request);
             return $preference;
-        } catch (MPApiException $error) {
-            Log::error('MercadoPago Error: ' . $error->getMessage());
-            return response()->json([
-                'error' => 'Error al crear la preferencia de pago',
-                'details' => $error->getMessage()
+        } catch (MPApiException $e) {
+            Log::error('Mercado Pago error:', [
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'trace' => $e->getTraceAsString(),
             ]);
+
+            event(new ErrorOccurred('Error al crear la preferencia de pago con Mercado Pago', $e->getMessage()));
+            return null;
         }
-        
     }
 }

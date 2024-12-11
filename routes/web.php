@@ -76,6 +76,12 @@ Route::middleware([
 
     Route::get('/rifas/ver', [RaffleController::class, 'publicIndex'])->name('raffles.public');
 
+    Route::prefix('mercadopago')->group(function(){
+        Route::get('{raffleId}/pagar', [MercadoPagoController::class, 'createPayment'])->name('mercadopago.pagar');
+        Route::get('success', [MercadoPagoController::class, 'success'])->name('mercadopago.success');
+        Route::get('failure', [MercadoPagoController::class, 'failure'])->name('mercadopago.failure');
+    });
+
 });
 
 

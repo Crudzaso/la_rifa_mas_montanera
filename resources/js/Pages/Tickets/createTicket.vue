@@ -121,6 +121,7 @@ watch(totalAmount, (newTotal) => {
 });
 </script>
 
+
 <template>
   <AppLayout title="Comprar Boletos">
     <template #header>
@@ -166,7 +167,7 @@ watch(totalAmount, (newTotal) => {
                   </div>
                 </div>
               </div>
-              
+
               <button
                 v-if="selectedNumbers.length"
                 @click="clearSelection"
@@ -184,7 +185,7 @@ watch(totalAmount, (newTotal) => {
         <!-- Grid de números con nuevo estilo -->
         <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-xl border border-[#4F772D]/20 p-6">
           <h2 class="text-2xl font-bold text-[#31572C] mb-6 text-center">Selecciona tus números</h2>
-          
+
           <div class="flex justify-center">
             <div class="grid grid-cols-8 sm:grid-cols-10 gap-2 w-full max-w-3xl">
               <button
@@ -273,7 +274,7 @@ watch(totalAmount, (newTotal) => {
                   class="px-3 py-1 bg-[#4F772D]/10 text-[#31572C] rounded-lg font-medium">
               {{ number }}
             </span>
-            <span v-if="selectedNumbers.length > 3" 
+            <span v-if="selectedNumbers.length > 3"
                   class="px-3 py-1 bg-[#4F772D]/10 text-[#31572C] rounded-lg font-medium">
               +{{ selectedNumbers.length - 3 }} más
             </span>
@@ -285,21 +286,21 @@ watch(totalAmount, (newTotal) => {
             </p>
           </div>
         </div>
-        
+
         <button
-          @click="confirmPurchase"
-          :disabled="!selectedNumbers.length"
-          class="px-6 py-3 bg-gradient-to-r from-[#4F772D] to-[#90A955] text-white font-bold rounded-xl
-                 hover:from-[#31572C] hover:to-[#4F772D] transition-all duration-300 transform hover:scale-[1.01]
-                 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg
-                 flex items-center gap-2"
-        >
-          <span>Comprar {{ selectedNumbers.length }} Boleto(s)</span>
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-          </svg>
-        </button>
+            @click="confirmPurchase"
+            :disabled="!selectedNumbers.length"
+            class="px-6 py-3 bg-gradient-to-r from-[#4F772D] to-[#90A955] text-white font-bold rounded-xl
+                    hover:from-[#31572C] hover:to-[#4F772D] transition-all duration-300 transform hover:scale-[1.01]
+                    disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg
+                    flex items-center gap-2"
+            >
+            <span>Comprar {{ selectedNumbers.length }} Boleto(s)</span>
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+            </button>
       </div>
     </div>
 
