@@ -9,7 +9,8 @@ use App\Http\Controllers\Tickts\TicketsController;
 use App\Models\Raffle;
 use App\Http\Controllers\API\LotteryController;
 use App\Http\Controllers\MercadoPagoController;
-
+use App\Http\Controllers\Users\GoogleController;
+use App\Http\Controllers\Users\GithubController;
 
 // Ruta principal
 Route::get('/', function () {
@@ -76,4 +77,18 @@ Route::middleware([
     Route::get('/rifas/ver', [RaffleController::class, 'publicIndex'])->name('raffles.public');
 
 });
+
+
+    // Google Authentication Routes
+    Route::prefix('auth/google')->group(function () {
+        Route::get('/', [GoogleController::class, 'login'])->name('auth.google');
+        Route::get('/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
+        Route::post('/logout', [GoogleController::class, 'logout'])->name('auth.google.logout');
+    });
+
+    // Github Authentication Routes
+    Route::prefix('auth/github')->group(function () {
+        Route::get('/', [GithubController::class, 'login'])->name('github.login');
+        Route::get('/callback', [GithubController::class, 'callback'])->name('auth.github.callback');
+    });
 
