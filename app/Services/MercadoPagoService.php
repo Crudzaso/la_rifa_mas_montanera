@@ -100,6 +100,7 @@ class MercadoPagoService
             ]);
 
             event(new ErrorOccurred('Error al obtener el estado del pago con Mercado Pago', $e->getMessage()));
+          
             return ['error' => 'Error al obtener el estado del pagoo.', $e->getMessage()];
         }
     }
