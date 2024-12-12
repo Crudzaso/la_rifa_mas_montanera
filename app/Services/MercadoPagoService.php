@@ -18,57 +18,66 @@ class MercadoPagoService
 
     protected function authenticate()
     {
-        $mpAccessToken = env('MERCADO_PAGO_ACCESS_TOKEN');
-        Log::info('Autenticación con Mercado Pago iniciada.', ['access_token' => $mpAccessToken]);
-        MercadoPagoConfig::setAccessToken($mpAccessToken);
+        $mpAccessToken = config('services.mercadopago.access_token');
+
+        Log::info('Intentando autenticar con token:', [
+            'token_exists' => !empty($mpAccessToken),
+            'token_length' => strlen($mpAccessToken ?? '')
+        ]);
+
+        if (empty($mpAccessToken)) {
+            Log::error('Token de MercadoPago no encontrado en la configuración');
+            throw new \Exception('Token de MercadoPago no configurado');
+        }
+
+        try {
+            MercadoPagoConfig::setAccessToken($mpAccessToken);
+            Log::info('MercadoPago autenticado exitosamente');
+        } catch (\Exception $e) {
+            Log::error('Error al autenticar MercadoPago:', [
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
     }
 
     public function createPaymentPreference($items, $payer)
     {
-        $paymentMethods = [
-            "excluded_payment_methods" => [],
-            "installments" => 12,
-            "default_installments" => 1,
-        ];
-
-        $backUrls = [
-            'success' => route('mercadopago.success'),
-            'failure' => route('mercadopago.failure'),
-        ];
-
-        Log::info('Creando preferencia de pago...', ['items' => $items, 'payer' => $payer]);
-
-        $request = [
-            "items" => $items,
-            "payer" => $payer,
-            "payment_methods" => $paymentMethods,
-            "back_urls" => $backUrls,
-            "statement_descriptor" => "NOMBRE_EN_FACTURA",
-            "external_reference" => "1234567890",
-            "expires" => false,
-            "auto_return" => 'approved',
-        ];
-
-        Log::info('Datos de la solicitud de preferencia:', ['request' => $request]);
-
-        $client = new PreferenceClient();
-
         try {
-            $preference = $client->create($request);
+            $client = new PreferenceClient();
 
-            Log::info('Preferencia de pago creada con éxito:', ['response' => $preference]);
+            $preferenceData = [
+                "items" => array_map(function($item) {
+                    return [
+                        "title" => $item['title'],
+                        "quantity" => $item['quantity'],
+                        "unit_price" => floatval($item['unit_price']),
+                        "currency_id" => "COP"
+                    ];
+                }, $items),
+                "payer" => $payer,
+                "back_urls" => [
+                    "success" => route('mercadopago.success'),
+                    "failure" => route('mercadopago.failure'),
+                    "pending" => route('mercadopago.failure')
+                ],
+                "auto_return" => "approved",
+                "binary_mode" => true
+            ];
+
+            Log::info('Creando preferencia con datos:', $preferenceData);
+
+            $preference = $client->create($preferenceData);
+            Log::info('Preferencia creada:', ['preference_id' => $preference->id]);
 
             return $preference;
-
         } catch (MPApiException $e) {
-            Log::error('Error al crear preferencia de pago en Mercado Pago:', [
+            Log::error('Error MercadoPago:', [
                 'message' => $e->getMessage(),
-                'code' => $e->getCode(),
-                'response' => $e->getApiResponse(),
-                'trace' => $e->getTraceAsString(),
+                'status' => $e->getCode(),
+                'response' => $e->getApiResponse()
             ]);
-            event(new ErrorOccurred('Error al crear la preferencia de pago con Mercado Pago', $e->getMessage()));
-            return ['error' => 'Error al crear la preferencia de pago.' , $e->getMessage()];
+            throw $e;
         }
     }
 

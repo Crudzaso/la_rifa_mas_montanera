@@ -87,7 +87,7 @@ const buyTickets = async () => {
         showMessage.value = true;
         message.value = 'Error al procesar el pago: ' + (error.response?.data?.message || 'Desconocido');
         type.value = 'error';
-        
+
         if (!error.response?.data) {
             console.error('Error desconocido:', error);
         }

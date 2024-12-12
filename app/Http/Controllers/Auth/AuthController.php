@@ -12,12 +12,16 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 use App\Helpers\EmailHelperGlobal;
-use App\Service\DiscordWebhookService;
+use App\Services\DiscordWebhookService;
 use App\Events\UserLogin;
 use App\Events\UserCreated;
 use App\Events\ErrorOccurred;
-
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Auth\RegisterRequest;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest as AuthRegisterRequest;
 use Spatie\Permission\Models\Role;
+
 
 class AuthController extends Controller
 {
@@ -28,7 +32,7 @@ class AuthController extends Controller
         $this->discordWebhookService = $discordWebhookService;
     }
 
-    public function registro(RegisterRequest $request)
+    public function registro(AuthRegisterRequest $request)
     {
         try {
             $validatedData = $request->validated();

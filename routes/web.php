@@ -83,16 +83,24 @@ Route::middleware([
 });
 
 
-    // Google Authentication Routes
-    Route::prefix('auth/google')->group(function () {
-        Route::get('/', [GoogleController::class, 'login'])->name('auth.google');
-        Route::get('/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
-        Route::post('/logout', [GoogleController::class, 'logout'])->name('auth.google.logout');
-    });
+// Google Authentication Routes
+Route::prefix('auth/google')->group(function () {
+    Route::get('/', [GoogleController::class, 'login'])->name('auth.google');
+    Route::get('/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
+    Route::post('/logout', [GoogleController::class, 'logout'])->name('auth.google.logout');
+});
 
-    // Github Authentication Routes
-    Route::prefix('auth/github')->group(function () {
-        Route::get('/', [GithubController::class, 'login'])->name('github.login');
-        Route::get('/callback', [GithubController::class, 'callback'])->name('auth.github.callback');
-    });
+// Github Authentication Routes
+Route::prefix('auth/github')->group(function () {
+    Route::get('/', [GithubController::class, 'login'])->name('github.login');
+    Route::get('/callback', [GithubController::class, 'callback'])->name('auth.github.callback');
+});
+
+// Agrega temporalmente en routes/web.php para debug
+Route::get('/config-test', function () {
+    dd([
+        'mp_token' => config('services.mercadopago.access_token'),
+        'mp_public' => config('services.mercadopago.public_key')
+    ]);
+});
 

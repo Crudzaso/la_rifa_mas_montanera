@@ -25,82 +25,41 @@ class MercadoPagoController extends Controller
      */
     public function createPayment(Request $request)
     {
-
-        Log::info('Autenticación con Mercado Pago iniciada.', ['access_token' => config('services.mercadopago.access_token')]);
-        Log::info('MercadoPagoController iniciado.');
-
-
-        Log::info('Creando pago...', ['user_id' => Auth::id()]);
-
-        $user = Auth::user();
-
-        $request->merge([
-            'ticket_numbers' => array_map('intval', $request->input('ticket_numbers', []))
-        ]);
-
-        $validated = $request->validate([
-            'raffle_id' => 'required|exists:raffles,id',
-            'ticket_numbers' => 'required',
-        ]);
-
-        $raffle = Raffle::find($validated['raffle_id']);
-
-        if (!$raffle) {
-            Log::error('Rifa no válida:', ['raffle_id' => $validated['raffle_id']]);
-            return response()->json([
-                'error' => 'La rifa seleccionada no es válida.'
-            ], 400);
-        }
-
-        $items = [
-            [
-                "id" => $raffle->id,
-                "title" => $raffle->title,
-                "description" => $raffle->description,
-                "currency_id" => "COP",
-                "quantity" => count($validated['ticket_numbers']),
-                "unit_price" => $raffle->price_tickets,
-            ]
-        ];
-
-        $payer = [
-            "name" => $user->name,
-            "email" => $user->email,
-        ];
-
-        Log::info('Enviando solicitud de preferencia de pago...', ['items' => $items, 'payer' => $payer]);
-
         try {
+            $validated = $request->validate([
+                'raffle_id' => 'required|exists:raffles,id',
+                'ticket_numbers' => 'required|array'
+            ]);
 
-            Log::info('creando prefencia');
+            $raffle = Raffle::findOrFail($validated['raffle_id']);
+            $user = Auth::user();
+
+            $items = [[
+                "title" => "Boletos para {$raffle->title}",
+                "quantity" => count($validated['ticket_numbers']),
+                "unit_price" => floatval($raffle->price_tickets),
+                "currency_id" => "COP"
+            ]];
+
+            $payer = [
+                "name" => $user->name,
+                "email" => $user->email
+            ];
 
             $preference = $this->mercadoPagoService->createPaymentPreference($items, $payer);
 
-            if (isset($preference['error'])) {
-                Log::error('Error al crear preferencia de pago:', ['preference' => $preference]);
-                return response()->json([
-                    'error' => $preference['error']
-                ], 500);
-            }
-
-            if ($preference && isset($preference->init_point)) {
-                Log::info('Preferencia de pago creada correctamente:', ['redirect_url' => $preference->init_point]);
-                return response()->json([
-                    'redirect_url' => $preference->init_point
-                ], 200);
-            } else {
-                Log::error('No se pudo crear la preferencia de pago.', ['preference' => $preference]);
-                return response()->json([
-                    'error' => 'No se pudo crear la preferencia de pago.'
-                ], 500);
-            }
-        } catch (\Exception $e) {
-            Log::error('Error al crear la preferencia de pago:', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
             return response()->json([
-                'error' => 'Hubo un error al procesar la solicitud de pago.'
+                'redirect_url' => $preference->init_point
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error en createPayment:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'error' => 'Error al procesar el pago: ' . $e->getMessage()
             ], 500);
         }
     }
