@@ -68,7 +68,7 @@ class MercadoPagoService
             Log::info('Creando preferencia con datos:', $preferenceData);
 
             $preference = $client->create($preferenceData);
-            Log::info('Preferencia creada:', ['preference_id' => $preference->id]);
+            Log::info('Preferencia creada: ', ['preference_id' => $preference->id]);
 
             return $preference;
         } catch (MPApiException $e) {
