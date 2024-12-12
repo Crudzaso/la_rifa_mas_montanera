@@ -31,6 +31,6 @@ jobs:
             composer dump-autoload
             npm install
             npm run build
-
+            
             php artisan migrate:fresh --seed
             php artisan optimize:clear
