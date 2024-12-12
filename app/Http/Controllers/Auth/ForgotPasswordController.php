@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\EmailHelperGlobal;
-use App\Service\DiscordWebhookService;
+use App\Services\DiscordWebhookService;
 
 class ForgotPasswordController extends Controller
 {
@@ -32,13 +32,13 @@ class ForgotPasswordController extends Controller
             $request->validate(['email' => 'required|email|exists:users,email']);
 
             $user = User::where('email', $request->email)->first();
-            
+
             $token = Password::createToken($user);
             $resetLink = route('password.reset', ['token' => $token, 'email' => $user->email]);
 
             $this->emailHelper::sendPasswordResetEmail($user, $resetLink);
 
-            app(EmailController::class)->sendPasswordResetEmail($user, $resetLink);
+            app(EmailHelperGlobal::class)->sendPasswordResetEmail($user, $resetLink);
 
             return back()->with('status', 'Se ha enviado un enlace de restablecimiento a tu correo.');
         } catch (\Exception $e) {

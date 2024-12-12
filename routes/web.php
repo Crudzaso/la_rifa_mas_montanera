@@ -29,12 +29,6 @@ Route::prefix('api')->group(function () {
 });
 
 
-// Rutas protegidas
-Route::get('mercadopago/pagar', [MercadoPagoController::class, 'showPaymentForm'])->name('mercadopago.payment');
-Route::post('mercadopago/crear-pago', [MercadoPagoController::class, 'createPayment'])->name('mercadopago.createPayment');
-Route::get('mercadopago/success', [MercadoPagoController::class, 'success'])->name('mercadopago.success');
-Route::get('mercadopago/failure', [MercadoPagoController::class, 'failure'])->name('mercadopago.failed');
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -76,19 +70,37 @@ Route::middleware([
 
     Route::get('/rifas/ver', [RaffleController::class, 'publicIndex'])->name('raffles.public');
 
+    Route::prefix('mercadopago')->group(function(){
+        Route::get('pagar', [MercadoPagoController::class, 'showPaymentForm'])->name('mercadopago.payment');
+        Route::post('crear-pago', [MercadoPagoController::class, 'createPayment'])->name('mercadopago.createPayment');
+        Route::get('success', [MercadoPagoController::class, 'success'])->name('mercadopago.success');
+        Route::get('failure', [MercadoPagoController::class, 'failure'])->name('mercadopago.failure');
+        // Route::get('{raffleId}/pagar', [MercadoPagoController::class, 'createPayment'])->name('mercadopago.pagar');
+        // Route::get('success', [MercadoPagoController::class, 'success'])->name('mercadopago.success');
+        // Route::get('failure', [MercadoPagoController::class, 'failure'])->name('mercadopago.failure');
+    });
+
 });
 
 
-    // Google Authentication Routes
-    Route::prefix('auth/google')->group(function () {
-        Route::get('/', [GoogleController::class, 'login'])->name('auth.google');
-        Route::get('/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
-        Route::post('/logout', [GoogleController::class, 'logout'])->name('auth.google.logout');
-    });
+// Google Authentication Routes
+Route::prefix('auth/google')->group(function () {
+    Route::get('/', [GoogleController::class, 'login'])->name('auth.google');
+    Route::get('/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
+    Route::post('/logout', [GoogleController::class, 'logout'])->name('auth.google.logout');
+});
 
-    // Github Authentication Routes
-    Route::prefix('auth/github')->group(function () {
-        Route::get('/', [GithubController::class, 'login'])->name('github.login');
-        Route::get('/callback', [GithubController::class, 'callback'])->name('auth.github.callback');
-    });
+// Github Authentication Routes
+Route::prefix('auth/github')->group(function () {
+    Route::get('/', [GithubController::class, 'login'])->name('github.login');
+    Route::get('/callback', [GithubController::class, 'callback'])->name('auth.github.callback');
+});
+
+// Agrega temporalmente en routes/web.php para debug
+Route::get('/config-test', function () {
+    dd([
+        'mp_token' => config('services.mercadopago.access_token'),
+        'mp_public' => config('services.mercadopago.public_key')
+    ]);
+});
 

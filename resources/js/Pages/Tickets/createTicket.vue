@@ -61,25 +61,37 @@ const confirmPurchase = () => {
 };
 
 // Proceder con la compra
-const buyTickets = () => {
+const buyTickets = async () => {
+    console.log('Números seleccionados:', selectedNumbers.value);
     form.ticket_numbers = selectedNumbers.value;
-    form.post(route('tickets.store'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            message.value = 'Boletos comprados exitosamente';
-            type.value = 'success';
+
+    try {
+        console.log('Enviando solicitud de pago con los datos:', form);
+
+        const response = await axios.post(route('mercadopago.createPayment'), form);
+
+        console.log('Respuesta de MercadoPago:', response);
+
+        if (response.data.redirect_url) {
+            console.log('Redirigiendo a:', response.data.redirect_url);
+            window.location.href = response.data.redirect_url;
+        } else {
+
             showMessage.value = true;
-            showConfirmModal.value = false;
-            setTimeout(() => {
-                window.location.href = route('tickets.index');
-            }, 2000);
-        },
-        onError: () => {
-            message.value = 'Error al comprar los boletos';
+            message.value = 'No se obtuvo una URL de redirección válida.';
             type.value = 'error';
-            showMessage.value = true;
+            console.error('Error: No se obtuvo una URL de redirección válida');
         }
-    });
+    } catch (error) {
+        console.error('Error al procesar el pago', error.response?.data);
+        showMessage.value = true;
+        message.value = 'Error al procesar el pago: ' + (error.response?.data?.message || 'Desconocido');
+        type.value = 'error';
+
+        if (!error.response?.data) {
+            console.error('Error desconocido:', error);
+        }
+    }
 };
 
 const getStatus = (raffle) => {
@@ -120,6 +132,7 @@ watch(totalAmount, (newTotal) => {
   });
 });
 </script>
+
 
 <template>
   <AppLayout title="Comprar Boletos">
@@ -166,7 +179,7 @@ watch(totalAmount, (newTotal) => {
                   </div>
                 </div>
               </div>
-              
+
               <button
                 v-if="selectedNumbers.length"
                 @click="clearSelection"
@@ -184,7 +197,7 @@ watch(totalAmount, (newTotal) => {
         <!-- Grid de números con nuevo estilo -->
         <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-xl border border-[#4F772D]/20 p-6">
           <h2 class="text-2xl font-bold text-[#31572C] mb-6 text-center">Selecciona tus números</h2>
-          
+
           <div class="flex justify-center">
             <div class="grid grid-cols-8 sm:grid-cols-10 gap-2 w-full max-w-3xl">
               <button
@@ -273,7 +286,7 @@ watch(totalAmount, (newTotal) => {
                   class="px-3 py-1 bg-[#4F772D]/10 text-[#31572C] rounded-lg font-medium">
               {{ number }}
             </span>
-            <span v-if="selectedNumbers.length > 3" 
+            <span v-if="selectedNumbers.length > 3"
                   class="px-3 py-1 bg-[#4F772D]/10 text-[#31572C] rounded-lg font-medium">
               +{{ selectedNumbers.length - 3 }} más
             </span>
@@ -285,61 +298,23 @@ watch(totalAmount, (newTotal) => {
             </p>
           </div>
         </div>
-        
+
         <button
-          @click="confirmPurchase"
-          :disabled="!selectedNumbers.length"
-          class="px-6 py-3 bg-gradient-to-r from-[#4F772D] to-[#90A955] text-white font-bold rounded-xl
-                 hover:from-[#31572C] hover:to-[#4F772D] transition-all duration-300 transform hover:scale-[1.01]
-                 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg
-                 flex items-center gap-2"
-        >
-          <span>Comprar {{ selectedNumbers.length }} Boleto(s)</span>
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-          </svg>
-        </button>
+            @click="buyTickets"
+            :disabled="!selectedNumbers.length"
+            class="px-6 py-3 bg-gradient-to-r from-[#4F772D] to-[#90A955] text-white font-bold rounded-xl
+                    hover:from-[#31572C] hover:to-[#4F772D] transition-all duration-300 transform hover:scale-[1.01]
+                    disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg
+                    flex items-center gap-2"
+            >
+            <span>Comprar {{ selectedNumbers.length }} Boleto(s)</span>
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+            </button>
       </div>
     </div>
-
-    <!-- Modal de confirmación -->
-    <Modal :show="showConfirmModal" @close="showConfirmModal = false">
-      <div class="p-6">
-        <h3 class="text-xl font-bold text-[#31572C] mb-4">
-          Confirmar compra
-        </h3>
-        <div class="space-y-4">
-          <p class="text-[#4F772D]">
-            ¿Estás seguro de comprar los siguientes números?
-          </p>
-          <div class="flex flex-wrap gap-2">
-            <span v-for="number in selectedNumbers"
-                  :key="number"
-                  class="px-3 py-1 bg-[#4F772D]/10 text-[#31572C] rounded-lg font-medium">
-              {{ number }}
-            </span>
-          </div>
-          <p class="font-semibold text-lg text-[#31572C]">
-            Total a pagar: ${{ totalAmount }}
-          </p>
-        </div>
-        <div class="mt-6 flex justify-end gap-3">
-          <button
-            @click="showConfirmModal = false"
-            class="px-4 py-2 text-[#31572C] hover:bg-[#4F772D]/10 rounded-lg transition-colors duration-200"
-          >
-            Cancelar
-          </button>
-          <button
-            @click="buyTickets"
-            class="px-4 py-2 bg-[#4F772D] text-white rounded-lg hover:bg-[#31572C] transition-colors duration-200"
-          >
-            Confirmar compra
-          </button>
-        </div>
-      </div>
-    </Modal>
   </AppLayout>
 </template>
 

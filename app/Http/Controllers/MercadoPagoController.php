@@ -3,76 +3,159 @@
 namespace App\Http\Controllers;
 
 use App\Services\MercadoPagoService;
+use App\Models\Raffle;
+use App\Models\TicketPurchase;
+use App\Models\Tickets;
+use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
-use App\Helpers\EmailHelperGlobal;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MercadoPagoController extends Controller
 {
     protected $mercadoPagoService;
-    protected $emailHelper;
 
-    public function __construct(MercadoPagoService $mercadoPagoService, EmailHelperGlobal $emailHelper)
+    public function __construct(MercadoPagoService $mercadoPagoService)
     {
         $this->mercadoPagoService = $mercadoPagoService;
-        $this->emailHelper = $emailHelper;
+        Log::info('MercadoPagoController iniciado.');
     }
 
-    // Mostrar el formulario de pago
-    public function showPaymentForm()
-    {
-        return view('mercadopago.payment');
-    }
-
-    // Crear la preferencia de pago
+    /**
+     * Crear preferencia de pago y devolver URL de redirección.
+     */
     public function createPayment(Request $request)
     {
-        $items = [
-            [
-                "id" => "1234567890",
-                "title" => "Producto 1",
-                "description" => "Descripción del producto 1",
-                "currency_id" => "COP",
-                "quantity" => 1,
-                "unit_price" => 1000.00
-            ],
-        ];
+        try {
+            $validated = $request->validate([
+                'raffle_id' => 'required|exists:raffles,id',
+                'ticket_numbers' => 'required|array'
+            ]);
 
-        $payer = [
-            "name" => $request->input('name'),
-            "surname" => $request->input('surname'),
-            "email" => $request->input('email'),
-        ];
+            // Guardar datos de compra en sesión
+            session(['purchase_data' => $validated]);
 
-        $preference = $this->mercadoPagoService->createPaymentPreference($items, $payer);
+            $raffle = Raffle::findOrFail($validated['raffle_id']);
+            $user = Auth::user();
 
-        if (isset($preference->init_point)) {
-            $totalAmount = 0;
-            foreach ($items as $item) {
-                $totalAmount += $item['unit_price'] * $item['quantity'];
-            }
+            $items = [[
+                "title" => $raffle->title,
+                "quantity" => count($validated['ticket_numbers']),
+                "unit_price" => floatval($raffle->price_tickets),
+                "currency_id" => "COP"
+            ]];
 
-            $user = (object) [
-                'names' => "{$payer['name']} {$payer['surname']}",
-                'email' => $payer['email'],
+            $payer = [
+                "name" => $user->name,
+                "email" => $user->email
             ];
 
-            $this->emailHelper::sendPaymentConfirmationEmail($user, $totalAmount);
+            $preference = $this->mercadoPagoService->createPaymentPreference($items, $payer);
 
-            return redirect($preference->init_point);
-        } else {
-            return redirect()->route('mercadopago.payment')->with('error', 'No se pudo crear la preferencia de pago.');
+            return response()->json([
+                'redirect_url' => $preference->init_point
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error en createPayment:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'error' => 'Error al procesar el pago: ' . $e->getMessage()
+            ], 500);
         }
     }
 
-    public function success()
+    /**
+     * Acción cuando el pago es exitoso.
+     */
+    public function success(Request $request)
     {
-        return redirect()->route('mercadopago.payment');
+        try {
+            Log::info('Pago exitoso recibido:', $request->all());
+
+            $paymentId = $request->get('payment_id');
+            $payment = $this->mercadoPagoService->getPaymentStatus($paymentId);
+
+            if ($payment && $payment->status == 'approved') {
+                Log::info('Pago aprobado, procesando compra...', [
+                    'payment_id' => $paymentId,
+                    'user_id' => Auth::id()
+                ]);
+
+                DB::beginTransaction();
+
+                // Obtener los datos de la sesión o de la preferencia de pago
+                $purchaseData = session('purchase_data');
+                if (!$purchaseData) {
+                    throw new \Exception('No se encontraron datos de la compra');
+                }
+
+                $raffle = Raffle::findOrFail($purchaseData['raffle_id']);
+                $ticketNumbers = $purchaseData['ticket_numbers'];
+
+                // Crear tickets individuales
+                foreach ($ticketNumbers as $number) {
+                    Tickets::create([
+                        'user_id' => Auth::id(),
+                        'raffle_id' => $raffle->id,
+                        'ticket_number' => $number,
+                        'is_winner' => false
+                    ]);
+                }
+
+                // Crear o actualizar el registro de compra
+                $ticketPurchase = TicketPurchase::updateOrCreate(
+                    [
+                        'user_id' => Auth::id(),
+                        'raffle_id' => $raffle->id
+                    ],
+                    [
+                        'quantity' => DB::raw('quantity + ' . count($ticketNumbers)),
+                        'payment_id' => $paymentId,
+                        'payment_status' => 'approved'
+                    ]
+                );
+
+                // Incrementar tickets vendidos en la rifa
+                $raffle->increment('tickets_sold', count($ticketNumbers));
+
+                DB::commit();
+
+                // Limpiar datos de sesión
+                session()->forget('purchase_data');
+
+                return redirect()->route('tickets.index')
+                    ->with('message', 'Compra realizada con éxito');
+
+            } else {
+                Log::error('Estado del pago no válido:', ['status' => $payment->status ?? 'unknown']);
+                throw new \Exception('El pago no fue aprobado');
+            }
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error en success:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->route('tickets.create', $purchaseData['raffle_id'] ?? null)
+                ->with('error', 'Error al procesar la compra: ' . $e->getMessage());
+        }
     }
 
-    // Página de fallo en el pago
+    /**
+     * Acción cuando el pago falla.
+     */
     public function failure()
     {
-        return redirect()->route('mercadopago.payment');
+        Log::error('El pago ha fallado.');
+        return response()->json([
+            'error' => 'El pago ha fallado.'
+        ], 400);
     }
 }
-
