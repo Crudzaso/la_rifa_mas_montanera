@@ -51,8 +51,9 @@ return [
             'webhook_url' => env('DISCORD_WEBHOOK_URL'),
     ],
 
-        'mercadopago' => [
-            'access_token' => env('MERCADOPAGO_ACCESS_TOKEN'),
+    'mercadopago' => [
+        'access_token' => env('MERCADOPAGO_ACCESS_TOKEN'),
+        'public_key' => env('MERCADOPAGO_PUBLIC_KEY'),
     ],
 
 ];

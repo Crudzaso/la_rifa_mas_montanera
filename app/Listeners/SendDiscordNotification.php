@@ -4,7 +4,6 @@ namespace App\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-
 use App\Events\UserCreated;
 use App\Events\UserUpdated;
 use App\Events\UserDeleted;
@@ -13,6 +12,7 @@ use App\Events\UserLogin;
 use App\Events\ErrorOccurred;
 use App\Services\DiscordWebhookService;
 use Illuminate\Support\Facades\Log;
+
 class SendDiscordNotification
 {
     protected $discordWebhook;

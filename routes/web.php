@@ -29,12 +29,6 @@ Route::prefix('api')->group(function () {
 });
 
 
-// Rutas protegidas
-Route::get('mercadopago/pagar', [MercadoPagoController::class, 'showPaymentForm'])->name('mercadopago.payment');
-Route::post('mercadopago/crear-pago', [MercadoPagoController::class, 'createPayment'])->name('mercadopago.createPayment');
-Route::get('mercadopago/success', [MercadoPagoController::class, 'success'])->name('mercadopago.success');
-Route::get('mercadopago/failure', [MercadoPagoController::class, 'failure'])->name('mercadopago.failed');
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -77,9 +71,13 @@ Route::middleware([
     Route::get('/rifas/ver', [RaffleController::class, 'publicIndex'])->name('raffles.public');
 
     Route::prefix('mercadopago')->group(function(){
-        Route::get('{raffleId}/pagar', [MercadoPagoController::class, 'createPayment'])->name('mercadopago.pagar');
+        Route::get('pagar', [MercadoPagoController::class, 'showPaymentForm'])->name('mercadopago.payment');
+        Route::post('crear-pago', [MercadoPagoController::class, 'createPayment'])->name('mercadopago.createPayment');
         Route::get('success', [MercadoPagoController::class, 'success'])->name('mercadopago.success');
         Route::get('failure', [MercadoPagoController::class, 'failure'])->name('mercadopago.failure');
+        // Route::get('{raffleId}/pagar', [MercadoPagoController::class, 'createPayment'])->name('mercadopago.pagar');
+        // Route::get('success', [MercadoPagoController::class, 'success'])->name('mercadopago.success');
+        // Route::get('failure', [MercadoPagoController::class, 'failure'])->name('mercadopago.failure');
     });
 
 });

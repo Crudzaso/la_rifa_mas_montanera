@@ -61,25 +61,37 @@ const confirmPurchase = () => {
 };
 
 // Proceder con la compra
-const buyTickets = () => {
+const buyTickets = async () => {
+    console.log('Números seleccionados:', selectedNumbers.value);
     form.ticket_numbers = selectedNumbers.value;
-    form.post(route('tickets.store'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            message.value = 'Boletos comprados exitosamente';
-            type.value = 'success';
+
+    try {
+        console.log('Enviando solicitud de pago con los datos:', form);
+
+        const response = await axios.post(route('mercadopago.createPayment'), form);
+
+        console.log('Respuesta de MercadoPago:', response);
+
+        if (response.data.redirect_url) {
+            console.log('Redirigiendo a:', response.data.redirect_url);
+            window.location.href = response.data.redirect_url;
+        } else {
+
             showMessage.value = true;
-            showConfirmModal.value = false;
-            setTimeout(() => {
-                window.location.href = route('tickets.index');
-            }, 2000);
-        },
-        onError: () => {
-            message.value = 'Error al comprar los boletos';
+            message.value = 'No se obtuvo una URL de redirección válida.';
             type.value = 'error';
-            showMessage.value = true;
+            console.error('Error: No se obtuvo una URL de redirección válida');
         }
-    });
+    } catch (error) {
+        console.error('Error al procesar el pago', error.response?.data);
+        showMessage.value = true;
+        message.value = 'Error al procesar el pago: ' + (error.response?.data?.message || 'Desconocido');
+        type.value = 'error';
+        
+        if (!error.response?.data) {
+            console.error('Error desconocido:', error);
+        }
+    }
 };
 
 const getStatus = (raffle) => {
@@ -288,7 +300,7 @@ watch(totalAmount, (newTotal) => {
         </div>
 
         <button
-            @click="confirmPurchase"
+            @click="buyTickets"
             :disabled="!selectedNumbers.length"
             class="px-6 py-3 bg-gradient-to-r from-[#4F772D] to-[#90A955] text-white font-bold rounded-xl
                     hover:from-[#31572C] hover:to-[#4F772D] transition-all duration-300 transform hover:scale-[1.01]
@@ -303,44 +315,6 @@ watch(totalAmount, (newTotal) => {
             </button>
       </div>
     </div>
-
-    <!-- Modal de confirmación -->
-    <Modal :show="showConfirmModal" @close="showConfirmModal = false">
-      <div class="p-6">
-        <h3 class="text-xl font-bold text-[#31572C] mb-4">
-          Confirmar compra
-        </h3>
-        <div class="space-y-4">
-          <p class="text-[#4F772D]">
-            ¿Estás seguro de comprar los siguientes números?
-          </p>
-          <div class="flex flex-wrap gap-2">
-            <span v-for="number in selectedNumbers"
-                  :key="number"
-                  class="px-3 py-1 bg-[#4F772D]/10 text-[#31572C] rounded-lg font-medium">
-              {{ number }}
-            </span>
-          </div>
-          <p class="font-semibold text-lg text-[#31572C]">
-            Total a pagar: ${{ totalAmount }}
-          </p>
-        </div>
-        <div class="mt-6 flex justify-end gap-3">
-          <button
-            @click="showConfirmModal = false"
-            class="px-4 py-2 text-[#31572C] hover:bg-[#4F772D]/10 rounded-lg transition-colors duration-200"
-          >
-            Cancelar
-          </button>
-          <button
-            @click="buyTickets"
-            class="px-4 py-2 bg-[#4F772D] text-white rounded-lg hover:bg-[#31572C] transition-colors duration-200"
-          >
-            Confirmar compra
-          </button>
-        </div>
-      </div>
-    </Modal>
   </AppLayout>
 </template>
 
