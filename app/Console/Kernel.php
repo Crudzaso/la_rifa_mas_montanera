@@ -11,10 +11,9 @@ class Kernel extends ConsoleKernel
     {
         // Verificar resultados de lotería diariamente
         $schedule->command('lottery:check-winners')
-                    ->between('16:00', '16:09')
-                    ->dailyAt('16:07');
+                    ->dailyAt('16:11');
 
         // Actualizar estados de rifas (después de verificar ganadores)
-        $schedule->command('raffles:update-status')->dailyAt('16:10');
+        $schedule->command('raffles:update-status')->dailyAt('16:15');
     }
 }

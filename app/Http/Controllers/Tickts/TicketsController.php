@@ -4,33 +4,33 @@ namespace App\Http\Controllers\Tickts;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tickets\StoreRequest;
+use App\Models\TicketPurchase;
 use App\Models\Tickets;
 use App\Models\Raffle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class TicketsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Mostrar una lista de los recursos.
      */
     public function index()
     {
-        $tickets = Tickets::with('raffle')  // Carga toda la relación
-            ->where('user_id', Auth::id())
+        $tickets = Tickets::with('raffle')  // Cargar la relación de la rifa
+            ->where('user_id', Auth::id())  // Filtrar por el usuario autenticado
             ->get();
-
 
         return Inertia::render('Tickets/indexTicket', [
             'tickets' => $tickets
         ]);
-
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Mostrar el formulario para crear un nuevo recurso.
      */
     public function create($raffle_id)
     {
@@ -39,25 +39,25 @@ class TicketsController extends Controller
             'raffle' => $raffle
         ]);
     }
+
     /*
-     * Store a newly created resource in storage.
+     * Almacenar un recurso recién creado en almacenamiento.
      */
     public function store(StoreRequest $request)
     {
         try {
             DB::beginTransaction();
 
-            $validated = $request->validated();
-            $raffle = Raffle::findOrFail($validated['raffle_id']);
+            $validated = $request->validated();  // Validar los datos
+            $raffle = Raffle::findOrFail($validated['raffle_id']);  // Buscar la rifa
+            $ticketNumbers = $validated['ticket_numbers'];  // Obtener los números de boletos seleccionados
+            $quantity = count($ticketNumbers);  // Contar la cantidad de boletos
 
-            // Verificar si el usuario ya tiene tickets en la rifa
-            $existingTickets = Tickets::where('user_id', Auth::id())
+            // Verificar si el usuario ya tiene boletos en esta rifa
+            $existingTickets = TicketPurchase::where('user_id', Auth::id())
                 ->where('raffle_id', $raffle->id)
-                ->count();
+                ->first();
 
-                //Se puede usar para calcular el total de la compra y pasarlo a mercado pago
-
-            //$totalAmount = count($validated['ticket_numbers']) * $raffle->price_tickets; 
 
             foreach ($validated['ticket_numbers'] as $number) {
                 Tickets::create([
@@ -68,16 +68,27 @@ class TicketsController extends Controller
                 ]);
             }
 
-            // Actualizar tickets vendidos
-            $raffle->increment('tickets_sold', count($validated['ticket_numbers']));
+            if ($existingTickets) {
+                // Si ya tiene boletos, actualizamos la cantidad
+                $existingTickets->update(['quantity' => $existingTickets->quantity + $quantity]);
+            } else {
+                TicketPurchase::create([
+                    'user_id' => Auth::id(),
+                    'raffle_id' => $raffle->id,
+                    'quantity' => $quantity,
+                ]);
+            }
+
+            $raffle->increment('tickets_sold', $quantity);
 
             DB::commit();
             return to_route('tickets.create', $raffle->id)
                 ->with('message', 'Boletos comprados exitosamente');
 
         } catch (\Exception $e) {
+            Log::error($e->getMessage());
             DB::rollback();
-            return to_route('tickets.create', $raffle->id)->withErrors(['error' => 'Error al comprar los boletos']);
+            return back()->with('error', 'Hubo un error al comprar los boletos.');
         }
     }
 

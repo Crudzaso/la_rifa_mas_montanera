@@ -1,29 +1,33 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import sebastian from '@/assets/images/sebastian.jpg';
+import davison from '@/assets/images/davison.jpg';
+import samuel from '@/assets/images/samuel.jpg';
+import nicolas from '@/assets/images/nicolas.jpg';
 
 const currentSlide = ref(0);
 const slideInterval = ref(null);
 
 const team = [
   {
-    name: 'Davi',
-    role: 'Desarrollador Full Stack',
-    image: '/path/to/creator1.jpg'
+    name: 'Davison',
+    role: 'Desarrollador Backend',
+    image: davison
   },
   {
     name: 'Sebastian',
-    role: 'Diseñador UX/UI',
-    image: '/path/to/creator2.jpg'
+    role: 'Diseñador Full Stack',
+    image: sebastian
   },
   {
     name: 'Samuel',
     role: 'Desarrollador Full Stack',
-    image: '/path/to/creator1.jpg'
+    image: samuel
   },
   {
     name: 'Nicolas',
     role: 'Desarrollador Backend',
-    image: '/path/to/creator3.jpg'
+    image: nicolas
   }
 ];
 
@@ -52,7 +56,7 @@ onMounted(() => {
     <div class="relative h-[500px]">
       <div class="absolute inset-0 flex transition-transform duration-500 ease-in-out"
            :style="{ transform: `translateX(-${currentSlide * 50}%)` }">
-        <div v-for="(member, index) in team" 
+        <div v-for="(member, index) in team"
              :key="index"
              class="w-1/2 h-full flex-shrink-0 px-2">
           <div class="relative h-full group transform transition-all duration-500 hover:scale-105">
@@ -69,7 +73,7 @@ onMounted(() => {
     </div>
 
     <!-- Controles -->
-    <button @click="prevSlide" 
+    <button @click="prevSlide"
             class="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-200">
       <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
