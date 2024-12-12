@@ -5,7 +5,7 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig({
     plugins: [
         laravel({
-            input: 'resources/js/app.js',
+            input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
         }),
         vue({
@@ -17,4 +17,20 @@ export default defineConfig({
             },
         }),
     ],
+    optimizeDeps: {
+        include: ['canvas-confetti']
+    },
+    build: {
+        outDir: 'public/build',
+        assetsDir: 'assets',
+    },
+    publicDir: 'public',
+    resolve: {
+        alias: {
+            '@': '/resources/js',
+            'assets': '/resources/assets'
+        },
+    },
 });
+
+
