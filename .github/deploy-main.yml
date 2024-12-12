@@ -20,6 +20,8 @@ jobs:
             git fetch
             echo '${{ secrets.ENV_FILE }}' > .env
             composer i
+            npm install
+            npm run build
             composer dump-autoload
             php artisan migrate:fresh --seed
             php artisan optimize:clear
