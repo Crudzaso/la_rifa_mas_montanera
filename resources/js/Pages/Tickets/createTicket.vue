@@ -334,7 +334,7 @@ watch(totalAmount, (newTotal) => {
           </div>
 
           <button
-            @click="confirmPurchase"
+            @click="buyTickets"
             :disabled="!selectedNumbers.length"
             class="mt-8 w-full py-4 bg-gradient-to-r from-[#4F772D] to-[#90A955] text-white text-lg font-bold rounded-xl hover:from-[#31572C] hover:to-[#4F772D] transition-all duration-300 transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg flex items-center justify-center gap-2"
           >
