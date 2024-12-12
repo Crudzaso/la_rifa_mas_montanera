@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('is_winner')->default(false);
             $table->timestamps();
 
-            
+
             $table->unique(['raffle_id', 'ticket_number']);
         });
     }

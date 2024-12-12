@@ -1,0 +1,27 @@
+name: CI/CD - LaRifaMasMontañera
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd "${{ secrets.PATH }}"
+            git pull origin main
+            git fetch
+            echo '${{ secrets.ENV_FILE }}' > .env
+            composer i
+            npm install
+            npm run build
+            composer dump-autoload
+            php artisan migrate:fresh --seed
+            php artisan optimize:clear
