@@ -109,7 +109,7 @@ const formatDate = (date) => {
                                 </div>
                                 <div class="text-center mt-4">
                                     <p class="text-[#4F772D] font-bold hover:text-[#31572C] transition-all duration-300">
-                                        de lunes a sabado a las 4:05 pm
+                                        de lunes a sabado a las 4:10 pm
                                     </p>
                                 </div>
                             </div>

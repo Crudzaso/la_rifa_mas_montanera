@@ -17,6 +17,7 @@
         "mercadopago/dx-php": "^3.0.8",
         "spatie/laravel-backup": "^9.1",
         "spatie/laravel-permission": "^6.10",
+        "symfony/polyfill-php83": "^1.31",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {

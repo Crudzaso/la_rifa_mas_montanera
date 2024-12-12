@@ -75,9 +75,6 @@ Route::middleware([
         Route::post('crear-pago', [MercadoPagoController::class, 'createPayment'])->name('mercadopago.createPayment');
         Route::get('success', [MercadoPagoController::class, 'success'])->name('mercadopago.success');
         Route::get('failure', [MercadoPagoController::class, 'failure'])->name('mercadopago.failure');
-        // Route::get('{raffleId}/pagar', [MercadoPagoController::class, 'createPayment'])->name('mercadopago.pagar');
-        // Route::get('success', [MercadoPagoController::class, 'success'])->name('mercadopago.success');
-        // Route::get('failure', [MercadoPagoController::class, 'failure'])->name('mercadopago.failure');
     });
 
 });

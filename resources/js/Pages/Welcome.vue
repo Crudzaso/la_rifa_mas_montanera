@@ -1,11 +1,13 @@
 <script setup>
-import { Head, Link } from "@inertiajs/vue3";
+import { Head, Link, usePage } from "@inertiajs/vue3";
 import Logo from '@/Components/LogoText.vue';
 import Carousel from '@/Components/Carousel.vue';
 import backgroundImage from '@/assets/images/background.png';
 import Footer from '@/Components/Footer.vue';
 import CarouselRaffles from '@/Components/CarouselRaffles.vue';
 import CarouselTeam from '@/Components/CarouselTeam.vue';
+
+const page = usePage();
 
 defineProps({
   canLogin: {
@@ -37,7 +39,7 @@ function handleImageError() {
 </script>
 
 <template>
-  <Head title="Welcome" />
+  <Head title="Bienvenido" />
   <div class="min-h-screen bg-gradient-to-br from-[#ECF39E] via-white to-[#90A955] relative">
     <!-- Nav -->
     <nav class="sticky top-0 z-50 bg-white/30 backdrop-blur-md border-b border-[#4F772D]/20">
@@ -45,12 +47,19 @@ function handleImageError() {
         <div class="flex justify-between h-20">
             <a class="py-3" href="/"><Logo colorClass="text-[#4F772D]" textColorClass="text-[#31572C]" /></a>
           <div class="flex items-center space-x-4">
-            <a href="/login" class="px-4 py-2 text[#31572C] hover:text-[#132A13] text-black  font-montserrat  hover:scale-105 transition-all duration-200">
-              Iniciar Sesión
-            </a>
-            <a href="/register" class="px-6 py-3 bg-[#4F772D] hover:bg-[#31572C] text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-montserrat">
-              Registrarse
-            </a>
+            <template v-if="!$page.props.auth.user">
+              <a href="/login" class="px-4 py-2 text[#31572C] hover:text-[#132A13] text-black font-montserrat hover:scale-105 transition-all duration-200">
+                Iniciar Sesión
+              </a>
+              <a href="/register" class="px-6 py-3 bg-[#4F772D] hover:bg-[#31572C] text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-montserrat">
+                Registrarse
+              </a>
+            </template>
+            <template v-else>
+              <a href="/rifas" class="px-6 py-3 bg-[#4F772D] hover:bg-[#31572C] text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-montserrat">
+                Ir a la página principal
+              </a>
+            </template>
           </div>
         </div>
       </div>
