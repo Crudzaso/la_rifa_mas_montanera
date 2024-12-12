@@ -15,13 +15,22 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
+            git config --global --add safe.directory $(pwd)
+
             cd "${{ secrets.PATH }}"
+
             git pull origin main
             git fetch
+
             echo '${{ secrets.ENV_FILE }}' > .env
+
+            sudo apt update
+            sudo apt install -y nodejs npm
+
             composer i
             composer dump-autoload
             npm install
             npm run build
+
             php artisan migrate:fresh --seed
             php artisan optimize:clear
