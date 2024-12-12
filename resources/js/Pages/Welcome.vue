@@ -52,7 +52,7 @@ function handleImageError() {
             <a href="/register" class="px-6 py-3 bg-[#4F772D] hover:bg-[#31572C] text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-montserrat">
               Registrarse
             </a>
-            <a href="/rias">
+            <a href="/rifas">
                 Ir a la pagina principal
             </a>
           </div>
