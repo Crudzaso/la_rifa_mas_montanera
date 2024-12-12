@@ -25,7 +25,7 @@ class UpdateRaffleStatus extends Command
                 }
             });
 
-        if ($now->format('H:i') === '16:07') {
+        if ($now->format('H:i') === '16:11') {
             $this->checkLotteryResults();
         }
 
