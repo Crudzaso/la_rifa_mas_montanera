@@ -3,31 +3,15 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\Users\UserController;
-use App\Http\Controllers\Raffles\RaffleController;
-use App\Http\Controllers\Tickts\TicketsController;
-use App\Models\Raffle;
-use App\Http\Controllers\API\LotteryController;
-use App\Http\Controllers\MercadoPagoController;
-use App\Http\Controllers\Users\GoogleController;
-use App\Http\Controllers\Users\GithubController;
 
-// Ruta principal
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
-        'raffles' => Raffle::all()
     ]);
-})->name('welcome');
-
-// Rutas API
-Route::prefix('api')->group(function () {
-    Route::get('loteria/resultados', [LotteryController::class, 'getResults']);
 });
-
 
 Route::middleware([
     'auth:sanctum',
@@ -83,28 +67,4 @@ Route::middleware([
         // Route::get('success', [MercadoPagoController::class, 'success'])->name('mercadopago.success');
         // Route::get('failure', [MercadoPagoController::class, 'failure'])->name('mercadopago.failure');
     });
-
 });
-
-
-// Google Authentication Routes
-Route::prefix('auth/google')->group(function () {
-    Route::get('/', [GoogleController::class, 'login'])->name('auth.google');
-    Route::get('/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');
-    Route::post('/logout', [GoogleController::class, 'logout'])->name('auth.google.logout');
-});
-
-// Github Authentication Routes
-Route::prefix('auth/github')->group(function () {
-    Route::get('/', [GithubController::class, 'login'])->name('github.login');
-    Route::get('/callback', [GithubController::class, 'callback'])->name('auth.github.callback');
-});
-
-// Agrega temporalmente en routes/web.php para debug
-Route::get('/config-test', function () {
-    dd([
-        'mp_token' => config('services.mercadopago.access_token'),
-        'mp_public' => config('services.mercadopago.public_key')
-    ]);
-});
-
