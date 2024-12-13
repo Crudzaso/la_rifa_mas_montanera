@@ -14,6 +14,7 @@ use App\Events\UserLogin;
 use App\Events\UserCreated;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Role;
 
 class GithubController extends Controller
 {
@@ -44,9 +45,8 @@ class GithubController extends Controller
                 $this->emailHelper::sendLoginNotification($user);
             } else {
                 $user = User::create([
-                    'name' => $user_github->name,
+                    'names' => $user_github->name,
                     'email' => $user_github->email,
-                    'password' => bcrypt('contraseña123')
                 ]);
 
                 GithubUser::create([
@@ -60,7 +60,8 @@ class GithubController extends Controller
                 event(new UserCreated($user));
             }
 
-            return redirect()->route('rafflex.index')->with('success', 'Has iniciado sesión correctamente.');
+            return redirect()->route('raffles.index')->with('success', 'Has iniciado sesión correctamente.');
+          
         } catch (\Exception $e) {
             Log::error('Github login error:', ['message' => $e->getMessage()]);
             event(new ErrorOccurred($user));
@@ -71,6 +72,6 @@ class GithubController extends Controller
     public function logout(Request $request)
     {
         Auth::guard('web')->logout();
-        return redirect()->route('login')->with('success', 'Has cerrado sesión correctamente.');
+        return redirect()->route('welcome')->with('success', 'Has cerrado sesión correctamente.');
     }
 }
