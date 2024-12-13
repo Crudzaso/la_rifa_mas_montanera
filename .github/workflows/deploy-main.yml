@@ -36,6 +36,6 @@ jobs:
             php artisan route:clear
             php artisan view:clear
             composer clear-cache
-            
+
             php artisan migrate:fresh --seed
             php artisan optimize:clear
