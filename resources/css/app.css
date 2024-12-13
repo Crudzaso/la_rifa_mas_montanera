@@ -1,6 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Modificar para forzar la aplicación */
+@layer base {
+    html, body {
+        font-family: 'Montserrat', system-ui, sans-serif;
+    }
+}
 
 [x-cloak] {
     display: none;

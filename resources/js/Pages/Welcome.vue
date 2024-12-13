@@ -1,11 +1,11 @@
 <script setup>
 import { Head, Link, usePage } from "@inertiajs/vue3";
-import Logo from '@/Components/LogoText.vue';
-import Carousel from '@/Components/Carousel.vue';
-import backgroundImage from '@/assets/images/background.png';
-import Footer from '@/Components/Footer.vue';
-import CarouselRaffles from '@/Components/CarouselRaffles.vue';
-import CarouselTeam from '@/Components/CarouselTeam.vue';
+import Logo from "@/Components/LogoText.vue";
+import Carousel from "@/Components/Carousel.vue";
+import backgroundImage from "@/assets/images/background.png";
+import Footer from "@/Components/Footer.vue";
+import CarouselRaffles from "@/Components/CarouselRaffles.vue";
+import CarouselTeam from "@/Components/CarouselTeam.vue";
 
 const page = usePage();
 
@@ -26,8 +26,8 @@ defineProps({
   },
   raffles: {
     type: Array,
-    default: () => []
-  }
+    default: () => [],
+  },
 });
 
 function handleImageError() {
@@ -41,32 +41,52 @@ function handleImageError() {
 <template>
   <Head title="Bienvenido" />
   <div class="min-h-screen bg-gradient-to-br from-[#ECF39E] via-white to-[#90A955] relative">
-    <!-- Nav -->
-    <nav class="sticky top-0 z-50 bg-white/30 backdrop-blur-md border-b border-[#4F772D]/20">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-20">
-            <a class="py-3" href="/"><Logo colorClass="text-[#4F772D]" textColorClass="text-[#31572C]" /></a>
-          <div class="flex items-center space-x-4">
-            <template v-if="!$page.props.auth.user">
-              <a href="/login" class="px-4 py-2 text[#31572C] hover:text-[#132A13] text-black font-montserrat hover:scale-105 transition-all duration-200">
-                Iniciar Sesión
+    <!-- Nav con nuevo estilo -->
+    <nav class="sticky top-0 z-50">
+      <!-- Fondo con montañas -->
+      <div class="absolute inset-0 bg-gradient w-full">
+        <div class="mountain-bg"></div>
+      </div>
+
+      <!-- Contenido del nav -->
+      <div class="relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+          <div class="flex justify-between h-28">
+            <!-- Logo -->
+            <div class="flex items-center">
+              <a class="py-3" href="/">
+                <Logo colorClass="text-[#4F772D]" textColorClass="text-[#31572C]" />
               </a>
-              <a href="/register" class="px-6 py-3 bg-[#4F772D] hover:bg-[#31572C] text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-montserrat">
-                Registrarse
-              </a>
-            </template>
-            <template v-else>
-              <a href="/rifas" class="px-6 py-3 bg-[#4F772D] hover:bg-[#31572C] text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-montserrat">
-                Ir a la página principal
-              </a>
-            </template>
+            </div>
+
+            <!-- Botones de autenticación -->
+            <div class="flex items-center space-x-4">
+              <template v-if="!$page.props.auth.user">
+                <a href="/login"
+                   class="px-4 py-2 rounded-lg text-[#31572C] hover:bg-[#4F772D]/10 transition-all duration-200">
+                  Iniciar Sesión
+                </a>
+                <a href="/register"
+                   class="px-6 py-3 bg-[#4F772D] hover:bg-[#31572C] text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                  Registrarse
+                </a>
+              </template>
+              <template v-else>
+                <a href="/rifas"
+                   class="px-6 py-3 bg-[#4F772D] hover:bg-[#31572C] text-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                  Ir a la página principal
+                </a>
+              </template>
+            </div>
           </div>
         </div>
       </div>
     </nav>
 
     <!--gradiente verde -->
-    <div class="relative overflow-hidden bg-gradient-to-br from-[#101d0ebe] to-[#132a13d8] py-12 sm:py-16 lg:py-24">
+    <div
+      class="relative overflow-hidden bg-gradient-to-br from-[#101d0ebe] to-[#132a13d8] py-12 sm:py-16 lg:py-24"
+    >
       <!-- Imagen de fondo con overlay -->
       <div
         class="absolute inset-0 mix-blend-overlay opacity-10"
@@ -74,7 +94,7 @@ function handleImageError() {
           backgroundImage: `url(${backgroundImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          backgroundRepeat: 'no-repeat',
         }"
       ></div>
 
@@ -82,17 +102,33 @@ function handleImageError() {
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="grid lg:grid-cols-2 gap-12 items-center">
           <div class="text-center lg:text-left">
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-8">
-              Participa y Gana<br/>
+            <h1
+              class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-8"
+            >
+              Participa y Gana<br />
               <span class="text-emerald-400">Increíbles Premios</span>
             </h1>
             <p class="text-lg text-emerald-100 mb-12 max-w-xl mx-auto lg:mx-0">
-              Únete a nuestra comunidad de ganadores. Compra tus boletos y sé parte de las rifas más emocionantes.
+              Únete a nuestra comunidad de ganadores. Compra tus boletos y sé
+              parte de las rifas más emocionantes.
             </p>
-            <a href="/register" class="inline-flex items-center px-8 py-4 bg-white text-emerald-900 rounded-xl font-bold text-lg hover:bg-emerald-50 transform hover:scale-105 transition-all duration-200 shadow-xl">
+            <a
+              href="/register"
+              class="inline-flex items-center px-8 py-4 bg-white text-emerald-900 rounded-xl font-bold text-lg hover:bg-emerald-50 transform hover:scale-105 transition-all duration-200 shadow-xl"
+            >
               Comenzar Ahora
-              <svg class="ml-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+              <svg
+                class="ml-2 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
               </svg>
             </a>
           </div>
@@ -212,7 +248,6 @@ function handleImageError() {
       </div>
     </div>
 
-    <!-- Sección de Rifas Disponibles -->
     <div class="py-12 sm:py-16 lg:py-24">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-4xl font-serif text-center mb-16 text-[#31572C]">
@@ -238,10 +273,58 @@ function handleImageError() {
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+/* Nuevos estilos del navbar */
+.bg-gradient {
+  background: linear-gradient(to bottom right, rgba(237, 245, 147, 0.8), rgba(144, 169, 85, 0.6));
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 16px 10px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
 
-.font-montserrat {
-  font-family: 'Montserrat', sans-serif;
+.mountain-bg::before,
+.mountain-bg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.mountain-bg::before {
+  height: 60%;
+  background: linear-gradient(165deg,
+    rgba(79, 119, 45, 0.2) 0%,
+    rgba(49, 87, 44, 0.1) 50%,
+    rgba(144, 169, 85, 0.15) 100%
+  );
+  clip-path: polygon(
+    0 100%,
+    15% 65%,
+    30% 85%,
+    50% 55%,
+    70% 80%,
+    85% 60%,
+    100% 85%,
+    100% 100%
+  );
+}
+
+.mountain-bg::after {
+  height: 65%;
+  background: linear-gradient(165deg,
+    rgba(79, 119, 45, 0.15) 0%,
+    rgba(49, 87, 44, 0.08) 50%,
+    rgba(144, 169, 85, 0.1) 100%
+  );
+  clip-path: polygon(
+    0 100%,
+    20% 10%,
+    40% 90%,
+    60% 20%,
+    80% 55%,
+    100% 30%,
+    100% 100%
+  );
 }
 
 @media (max-width: 425px) {

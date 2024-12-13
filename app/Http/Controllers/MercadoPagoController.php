@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\DiscordWebhookService;
 use App\Services\MercadoPagoService;
 use App\Models\Raffle;
 use App\Models\TicketPurchase;
@@ -11,22 +12,23 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Events\BuyTicket;
 use App\Helpers\EmailHelperGlobal;
 
 class MercadoPagoController extends Controller
 {
     protected $mercadoPagoService;
     private $emailHelperGlobal;
+    protected $discordWebhookService;
 
-    public function __construct(MercadoPagoService $mercadoPagoService,EmailHelperGlobal $emailHelperGlobal)
+    public function __construct(MercadoPagoService $mercadoPagoService,EmailHelperGlobal $emailHelperGlobal, DiscordWebhookService $discordWebhookService)
     {
         $this->mercadoPagoService = $mercadoPagoService;
         $this->emailHelperGlobal = $emailHelperGlobal;
+        $this->discordWebhookService = $discordWebhookService;
         Log::info('MercadoPagoController iniciado.');
+        Log::info('Listener SendDiscordNotification ejecutado');
     }
-  
-
-
 
     /**
      * Crear preferencia de pago y devolver URL de redirección.
@@ -81,6 +83,7 @@ class MercadoPagoController extends Controller
     public function success(Request $request)
     {
         try {
+
             Log::info('Pago exitoso recibido:', $request->all());
 
             $paymentId = $request->get('payment_id');
@@ -130,9 +133,16 @@ class MercadoPagoController extends Controller
                 $raffle->increment('tickets_sold', count($ticketNumbers));
 
                 DB::commit();
-                 // Enviar el correo de confirmación de compra
-                 $this->emailHelperGlobal->sendPurchaseConfirmationEmail(Auth::user(), $raffle, $ticketNumbers);
-                Log::info('email no enviado');
+
+                // Enviar el mensaje a discord de confirmación de compra
+                event(new BuyTicket(Auth::user(), $raffle, $ticketNumbers, $payment->transaction_amount));
+                // Enviar el correo de confirmación de compra
+                $this->emailHelperGlobal->sendTicketPurchaseEmail(Auth::user(), $raffle, $ticketNumbers);
+
+
+
+                Log::info('Error al enviar el email');
+
                 // Limpiar datos de sesión
                 session()->forget('purchase_data');
 

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, provide, computed } from 'vue'; 
+import { ref, provide, computed } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import Banner from '@/Components/Banner.vue';
 import NavBar from '@/Components/NavBar.vue';
@@ -17,15 +17,12 @@ const page = usePage();
 const userPermissions = computed(() => {
     const user = page.props.auth?.user;
     if (!user || !user.roles) return [];
-    
+
     // Obtener todos los permisos de todos los roles
     return user.roles.flatMap(role => role.permissions || []);
 });
 
-//console.log('Roles del usuario:', page.props.auth?.user?.roles);
-//console.log('Permisos del usuario:', userPermissions.value);
 
-// Proveer permisos a componentes hijos
 provide('userPermissions', userPermissions);
 provide('hasRole', hasRole);
 provide('hasPermission', hasPermission);
@@ -42,8 +39,8 @@ const logout = () => {
         <Head :title="title" />
         <Banner />
         <div class="flex-grow">
-            <NavBar 
-                :auth="$page.props.auth" 
+            <NavBar
+                :auth="$page.props.auth"
                 :user-permissions="userPermissions"
             />
 
@@ -67,14 +64,3 @@ const logout = () => {
     </div>
 </template>
 
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
-
-.font-montserrat {
-    font-family: 'Montserrat', sans-serif;
-}
-
-:deep(.bg-gray-100) {
-    background: transparent;
-}
-</style>

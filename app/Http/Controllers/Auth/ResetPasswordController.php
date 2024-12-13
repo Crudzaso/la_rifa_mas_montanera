@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use App\Services\DiscordWebhookService;
+use Inertia\Inertia;
 
 class ResetPasswordController extends Controller
 {
@@ -19,9 +20,9 @@ class ResetPasswordController extends Controller
 
     public function showResetForm(Request $request, $token = null)
     {
-        return view('auth.new-password')->with([
-            'token' => $token,
-            'email' => $request->email
+        return Inertia::render('Auth/ResetPassword', [
+            'email' => $request->email,
+            'token' => $request->route('token'),
         ]);
     }
 

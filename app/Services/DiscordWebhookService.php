@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class DiscordWebhookService
 {
@@ -26,17 +27,26 @@ class DiscordWebhookService
 
     protected function sendRequest(array $data)
     {
-        $options = [
-            'http' => [
-                'header'  => "Content-Type: application/json\r\n",
-                'method'  => 'POST',
-                'content' => json_encode($data),
-            ],
-        ];
-
-        $context  = stream_context_create($options);
-        file_get_contents($this->webhookUrl, false, $context);
+        try {
+            $options = [
+                'http' => [
+                    'header'  => "Content-Type: application/json\r\n",
+                    'method'  => 'POST',
+                    'content' => json_encode($data),
+                ],
+            ];
+    
+            $context  = stream_context_create($options);
+            $response = file_get_contents($this->webhookUrl, false, $context);
+    
+            if ($response === false) {
+                Log::error('Error al enviar mensaje a Discord', ['url' => $this->webhookUrl, 'data' => $data]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error al enviar mensaje a Discord', ['exception' => $e->getMessage()]);
+        }
     }
+    
 
     public function sendErrorToDiscord($message)
     {

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\EmailHelperGlobal;
 use App\Services\DiscordWebhookService;
+use Inertia\Inertia;
 
 class ForgotPasswordController extends Controller
 {
@@ -22,9 +23,9 @@ class ForgotPasswordController extends Controller
     }
 
     public function showLinkRequestForm()
-    {
-        return view('auth.forgot-password');
-    }
+{
+    return Inertia::render('Auth/ForgotPassword');
+}
 
     public function sendResetLinkEmail(Request $request)
     {
