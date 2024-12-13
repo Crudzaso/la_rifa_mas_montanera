@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
+use App\Helpers\EmailHelperGlobal;
 
 class TicketsController extends Controller
 {
@@ -80,6 +81,9 @@ class TicketsController extends Controller
             }
 
             $raffle->increment('tickets_sold', $quantity);
+
+            // Enviar el correo de confirmación de compra
+            $this->sendPurchaseConfirmationEmail(Auth::user(), $raffle, $ticketNumbers);
 
             DB::commit();
             return to_route('tickets.create', $raffle->id)

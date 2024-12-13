@@ -128,4 +128,46 @@ class EmailHelperGlobal
 
         self::sendEmailRequest($user->email, $user->name, $subject, $htmlContent);
     }
+    public static function sendWinnerEmail($winner)
+    {
+        $subject = '¡Felicidades! Has ganado en La Rifa Mas Montañera';
+
+        $messageContent = "
+            ¡Enhorabuena, <strong>{$winner->name}</strong>!<br><br>
+            Tu boleto con el número <strong>{$winner->ticket_number}</strong> ha sido seleccionado como ganador en nuestra rifa.
+            ¡Disfruta de tu premio!<br><br>
+            Para más detalles, por favor visita nuestra página o contacta con nosotros.
+        ";
+
+        $footer = 'Este es un mensaje automático, por favor no respondas.';
+
+        $htmlContent = self::generateMessage($winner->name, $messageContent, $footer);
+
+        self::sendEmailRequest($winner->email, $winner->name, $subject, $htmlContent);
+    }
+    private function sendPurchaseConfirmationEmail($user, $raffle, $ticketNumbers)
+    {
+        $subject = 'Confirmación de Compra de Boletos - La Rifa Mas Montañera';
+
+        $messageContent = "
+            ¡Gracias por comprar boletos en nuestra rifa!<br><br>
+            Has comprado los siguientes números de boleto para la rifa <strong>{$raffle->name}</strong>:<br><br>
+            <ul>";
+
+        foreach ($ticketNumbers as $number) {
+            $messageContent .= "<li>{$number}</li>";
+        }
+
+        $messageContent .= "</ul><br>
+            ¡Te deseamos mucha suerte!<br><br>
+            Este es un mensaje automático, por favor no respondas.
+        ";
+
+        $footer = 'Este es un mensaje automático, por favor no respondas.';
+
+        $htmlContent = EmailHelperGlobal::generateMessage($user->name, $messageContent, $footer);
+
+       
+        self::sendEmailRequest($user->email, $user->name, $subject, $htmlContent);
+    }
 }
