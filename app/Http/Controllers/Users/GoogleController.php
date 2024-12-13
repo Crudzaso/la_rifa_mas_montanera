@@ -66,7 +66,7 @@ class GoogleController extends Controller
         } catch (\Exception $e) {
             Log::error('Error al iniciar sesión con Google', ['error' => $e->getMessage()]);
             event(new ErrorOccurred('Error al iniciar sesión con Google', $e->getMessage()));
-            return redirect()->route('auth.google')->with('error', 'Error al iniciar sesión con Google.');
+            return redirect()->route('auth.login')->with('error', 'Error al iniciar sesión con Google.');
         }
     }
 
