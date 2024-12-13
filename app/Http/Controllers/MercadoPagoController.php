@@ -11,16 +11,22 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\EmailHelperGlobal;
 
 class MercadoPagoController extends Controller
 {
     protected $mercadoPagoService;
+    private $emailHelperGlobal;
 
-    public function __construct(MercadoPagoService $mercadoPagoService)
+    public function __construct(MercadoPagoService $mercadoPagoService,EmailHelperGlobal $emailHelperGlobal)
     {
         $this->mercadoPagoService = $mercadoPagoService;
+        $this->emailHelperGlobal = $emailHelperGlobal;
         Log::info('MercadoPagoController iniciado.');
     }
+  
+
+
 
     /**
      * Crear preferencia de pago y devolver URL de redirección.
@@ -124,7 +130,9 @@ class MercadoPagoController extends Controller
                 $raffle->increment('tickets_sold', count($ticketNumbers));
 
                 DB::commit();
-
+                 // Enviar el correo de confirmación de compra
+                 $this->emailHelperGlobal->sendPurchaseConfirmationEmail(Auth::user(), $raffle, $ticketNumbers);
+                Log::info('email no enviado');
                 // Limpiar datos de sesión
                 session()->forget('purchase_data');
 

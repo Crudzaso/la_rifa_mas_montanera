@@ -89,7 +89,7 @@ Route::prefix('auth/google')->group(function () {
 
 // Github Authentication Routes
 Route::prefix('auth/github')->group(function () {
-    Route::get('/', [GithubController::class, 'login'])->name('auth.login');
+    Route::get('/', [GithubController::class, 'login'])->name('auth.github');
     Route::get('/callback', [GithubController::class, 'callback'])->name('auth.github.callback');
 });
 

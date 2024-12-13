@@ -145,7 +145,8 @@ class EmailHelperGlobal
 
         self::sendEmailRequest($winner->email, $winner->name, $subject, $htmlContent);
     }
-    private function sendPurchaseConfirmationEmail($user, $raffle, $ticketNumbers)
+    
+    public function sendPurchaseConfirmationEmail($user, $raffle, $ticketNumbers)
     {
         $subject = 'Confirmación de Compra de Boletos - La Rifa Mas Montañera';
 
