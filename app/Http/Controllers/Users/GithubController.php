@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Users;
 
+use App\Events\ErrorOccurred;
 use App\Models\User;
 use App\Models\GithubUser;
 use Laravel\Socialite\Facades\Socialite;
@@ -62,7 +63,7 @@ class GithubController extends Controller
             return redirect()->route('rafflex.index')->with('success', 'Has iniciado sesión correctamente.');
         } catch (\Exception $e) {
             Log::error('Github login error:', ['message' => $e->getMessage()]);
-            $this->discordWebhookService->sendErrorToDiscord("Error al iniciar sesión con Github: " . $e->getMessage());
+            event(new ErrorOccurred($user));
             return redirect()->route('auth.github')->with('error', 'Error al iniciar sesión con Github.');
         }
     }
