@@ -81,6 +81,20 @@ Route::middleware([
 
 });
 
+// Rutas de recuperación y reseteo de contraseña
+Route::middleware('guest')->group(function () {
+    // Recuperar contraseña
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
+        ->name('password.request');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+        ->name('password.email');
+
+    // Resetear contraseña
+    Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
+        ->name('password.reset');
+    Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
+        ->name('password.update');
+});
 
 // Google Authentication Routes
 Route::prefix('auth/google')->group(function () {
