@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Lotteries;
 use App\Models\LotteryResult;
 use App\Services\LotteryService;
 use App\Services\RaffleService;
+use App\Helpers\EmailHelperGlobal;
 
 class ProcessLotteryResults
 {
@@ -35,7 +36,12 @@ class ProcessLotteryResults
 
             foreach ($todayRaffles as $raffle) {
                 // Actualizar tickets ganadores
-                $this->raffleService->updateWinningTickets($winningNumber, $raffle);
+                $winners =$this->raffleService->updateWinningTickets($winningNumber, $raffle);
+
+                foreach ($winners as $winner){
+                    //enviar correo al ganador
+                    $this->sendWinnerEmail($winner);
+                }
                 // Finalizar la rifa
                 $this->raffleService->finalizeRaffle($raffle);
             }
