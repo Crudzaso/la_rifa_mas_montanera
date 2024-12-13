@@ -173,7 +173,7 @@ class MercadoPagoController extends Controller
     {
         Log::error('El pago ha fallado.');
         return response()->json([
-            'error' => 'El pago ha fallado.'
+            'error' => 'El pago fallo.'
         ], 400);
     }
 }
