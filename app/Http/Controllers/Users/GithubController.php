@@ -61,6 +61,7 @@ class GithubController extends Controller
             }
 
             return redirect()->route('raffles.index')->with('success', 'Has iniciado sesión correctamente.');
+          
         } catch (\Exception $e) {
             Log::error('Github login error:', ['message' => $e->getMessage()]);
             event(new ErrorOccurred($user));
