@@ -132,14 +132,12 @@ class MercadoPagoController extends Controller
                 // Incrementar tickets vendidos en la rifa
                 $raffle->increment('tickets_sold', count($ticketNumbers));
 
-                DB::commit();
-
                 // Enviar el mensaje a discord de confirmación de compra
                 event(new BuyTicket(Auth::user(), $raffle, $ticketNumbers, $payment->transaction_amount));
                 // Enviar el correo de confirmación de compra
                 $this->emailHelperGlobal->sendTicketPurchaseEmail(Auth::user(), $raffle, $ticketNumbers);
 
-
+                DB::commit();
 
                 Log::info('Error al enviar el email');
 
