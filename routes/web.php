@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -79,6 +81,20 @@ Route::middleware([
 
 });
 
+// Rutas de recuperación y reseteo de contraseña
+Route::middleware('guest')->group(function () {
+    // Recuperar contraseña
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
+        ->name('password.request');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+        ->name('password.email');
+
+    // Resetear contraseña
+    Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
+        ->name('password.reset');
+    Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
+        ->name('password.update');
+});
 
 // Google Authentication Routes
 Route::prefix('auth/google')->group(function () {
@@ -92,6 +108,13 @@ Route::prefix('auth/github')->group(function () {
     Route::get('/', [GithubController::class, 'login'])->name('auth.login');
     Route::get('/callback', [GithubController::class, 'callback'])->name('auth.github.callback');
 });
+
+// Password Reset Routes
+Route::get('reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('auth.reset');
+Route::post('reset', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('new-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('new-password', [ResetPasswordController::class, 'reset'])->name('password.update');
+
 
 // Agrega temporalmente en routes/web.php para debug
 Route::get('/config-test', function () {
