@@ -59,7 +59,7 @@ class GithubController extends Controller
                 event(new UserCreated($user));
             }
 
-            return redirect()->route('rifas')->with('success', 'Has iniciado sesión correctamente.');
+            return redirect()->route('rafflex.index')->with('success', 'Has iniciado sesión correctamente.');
         } catch (\Exception $e) {
             Log::error('Github login error:', ['message' => $e->getMessage()]);
             $this->discordWebhookService->sendErrorToDiscord("Error al iniciar sesión con Github: " . $e->getMessage());
